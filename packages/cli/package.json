@@ -1,6 +1,6 @@
 {
   "name": "@xantiagoma/dokploy",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "CLI for Dokploy — import infrastructure as code, manage resources",
   "type": "module",
   "license": "MIT",
@@ -10,8 +10,19 @@
     "url": "git+https://github.com/xantiagoma/dokploy-deploy.git",
     "directory": "packages/cli"
   },
-  "keywords": ["dokploy", "cli", "iac", "infrastructure", "import", "pulumi", "sst"],
-  "files": ["dist", "README.md"],
+  "keywords": [
+    "dokploy",
+    "cli",
+    "iac",
+    "infrastructure",
+    "import",
+    "pulumi",
+    "sst"
+  ],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "bin": {
     "dokploy": "./dist/cli.mjs"
   },

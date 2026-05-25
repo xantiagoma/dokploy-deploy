@@ -1,6 +1,6 @@
 {
   "name": "@xantiagoma/dokploy-pulumi",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Pulumi dynamic provider for Dokploy — manage projects, compose services, and domains as code",
   "type": "module",
   "license": "MIT",
@@ -10,8 +10,18 @@
     "url": "git+https://github.com/xantiagoma/dokploy-deploy.git",
     "directory": "packages/pulumi"
   },
-  "keywords": ["dokploy", "pulumi", "iac", "infrastructure", "docker", "compose"],
-  "files": ["dist", "README.md"],
+  "keywords": [
+    "dokploy",
+    "pulumi",
+    "iac",
+    "infrastructure",
+    "docker",
+    "compose"
+  ],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "exports": {
     ".": {
       "types": "./src/index.ts",
