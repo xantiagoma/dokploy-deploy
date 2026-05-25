@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.7
+
+[compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.6...v0.0.7)
+
+### 🩹 Fixes
+
+- **pulumi:** Use declare for class fields to prevent output overwrites ([deffd27](https://github.com/xantiagoma/dokploy-deploy/commit/deffd27))
+
+### ❤️ Contributors
+
+- Santiago Montoya ([@xantiagoma](https://github.com/xantiagoma))
+
 ## v0.0.6
 
 [compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.5...v0.0.6)
