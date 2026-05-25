@@ -4,11 +4,12 @@ Instructions for AI assistants working on this project.
 
 ## Overview
 
-Declarative IaC for [Dokploy](https://dokploy.com) — a self-hosted PaaS. Three packages:
+Declarative IaC for [Dokploy](https://dokploy.com) — a self-hosted PaaS. Four packages:
 
 - `packages/api-client` — `@xantiagoma/dokploy-api` — typed HTTP client (526 endpoints, codegen'd from OpenAPI)
 - `packages/pulumi` — `@xantiagoma/dokploy-pulumi` — Pulumi Dynamic Provider (30 resources)
 - `packages/sst` — `@xantiagoma/dokploy-sst` — high-level SST/Pulumi components (12 components)
+- `packages/cli` — `@xantiagoma/dokploy` — CLI with `dokploy pull` to import existing infrastructure
 
 ## Tech Stack
 
@@ -39,8 +40,10 @@ dokploy-deploy/
 │   │   └── tsdown.config.ts
 │   ├── pulumi/               # @xantiagoma/dokploy-pulumi
 │   │   └── src/              # 30 Pulumi Dynamic Provider resources
-│   └── sst/                  # @xantiagoma/dokploy-sst
-│       └── src/              # 12 high-level SST components
+│   ├── sst/                  # @xantiagoma/dokploy-sst
+│   │   └── src/              # 12 high-level SST components + helpers
+│   └── cli/                  # @xantiagoma/dokploy
+│       └── src/              # CLI with `dokploy pull` command (citty + ts-morph)
 ├── test-e2e/                 # Pulumi E2E test fixtures
 ├── scripts/
 │   └── sync-versions.ts      # Sync root version to all packages (changelogen hook)

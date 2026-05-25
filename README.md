@@ -9,6 +9,7 @@ Declarative Infrastructure as Code for [Dokploy](https://dokploy.com) — manage
 | [`@xantiagoma/dokploy-api`](./packages/api-client) | Typed HTTP client — 526 endpoints, 48 routers, codegen'd from OpenAPI | [![npm](https://img.shields.io/npm/v/@xantiagoma/dokploy-api)](https://www.npmjs.com/package/@xantiagoma/dokploy-api) |
 | [`@xantiagoma/dokploy-pulumi`](./packages/pulumi) | Pulumi dynamic provider — 30 resources, pure TypeScript, no Terraform | [![npm](https://img.shields.io/npm/v/@xantiagoma/dokploy-pulumi)](https://www.npmjs.com/package/@xantiagoma/dokploy-pulumi) |
 | [`@xantiagoma/dokploy-sst`](./packages/sst) | High-level SST/Pulumi components — 12 components with sensible defaults | [![npm](https://img.shields.io/npm/v/@xantiagoma/dokploy-sst)](https://www.npmjs.com/package/@xantiagoma/dokploy-sst) |
+| [`@xantiagoma/dokploy`](./packages/cli) | CLI — pull existing infrastructure into IaC code | [![npm](https://img.shields.io/npm/v/@xantiagoma/dokploy)](https://www.npmjs.com/package/@xantiagoma/dokploy) |
 
 ## Why?
 
@@ -17,15 +18,31 @@ Dokploy is a great self-hosted PaaS, but it lacks a proper IaC story. The existi
 ## Quick Start
 
 ```bash
-# API client only
-bun add @xantiagoma/dokploy-api
+# Pull existing infrastructure into code (no install needed)
+npx @xantiagoma/dokploy pull --url https://dokploy.example.com --key YOUR_KEY
 
-# Pulumi IaC (includes API client)
-bun add @xantiagoma/dokploy-pulumi
-
-# High-level SST components (includes Pulumi + API client)
-bun add @xantiagoma/dokploy-sst
+# Or install packages for building IaC
+bun add @xantiagoma/dokploy-api       # API client only
+bun add @xantiagoma/dokploy-pulumi    # Pulumi IaC (includes API client)
+bun add @xantiagoma/dokploy-sst       # High-level SST components (includes all)
 ```
+
+### CLI — Pull Existing Infrastructure
+
+Generate IaC code from a running Dokploy instance:
+
+```bash
+# SST format (default)
+npx @xantiagoma/dokploy pull --url https://dokploy.example.com --key YOUR_KEY -o infra.ts
+
+# Pulumi format
+npx @xantiagoma/dokploy pull --url https://dokploy.example.com --key YOUR_KEY --format pulumi
+
+# Using environment variables
+DOKPLOY_URL=... DOKPLOY_API_KEY=... npx @xantiagoma/dokploy pull
+```
+
+Auto-detects `${{project.VAR}}` references and converts them to `projectRef("VAR")` calls. Resolves GitHub App installations by name via `gitProvider()`.
 
 ### Layer 1 — API Client
 
@@ -209,9 +226,13 @@ graph TB
 
         subgraph sst-pkg["@xantiagoma/dokploy-sst"]
             components["12 High-level ComponentResource wrappers"]
-            helpers["projectRef() · envRef()\nenv-as-object · auto backup wiring"]
+            helpers["projectRef() · envRef() · gitProvider()\nconnectionString · auto backup wiring"]
 
             components --> helpers
+        end
+
+        subgraph cli-pkg["@xantiagoma/dokploy (CLI)"]
+            pull["dokploy pull\nImport existing infra into IaC code"]
         end
     end
 
@@ -222,6 +243,8 @@ graph TB
     client -- "HTTP query/mutate" --> api
     pulumi-pkg -- "imports" --> api-client
     sst-pkg -- "imports" --> pulumi-pkg
+    cli-pkg -- "imports" --> api-client
+    pull -- "generates" --> infra
     infra --> sst-pkg
 
     style dokploy fill:#1a1a2e,color:#fff
