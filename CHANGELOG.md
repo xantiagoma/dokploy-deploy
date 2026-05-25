@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.4
+
+[compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.3...v0.0.4)
+
+### 🩹 Fixes
+
+- Keep workspace:* in source, resolve at publish time in CI ([d542244](https://github.com/xantiagoma/dokploy-deploy/commit/d542244))
+
+### ❤️ Contributors
+
+- Santiago Montoya ([@xantiagoma](https://github.com/xantiagoma))
+
 ## v0.0.3
 
 [compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.2...v0.0.3)
