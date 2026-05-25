@@ -1,0 +1,20 @@
+{
+  "types": {
+    "feat": { "title": "Features" },
+    "fix": { "title": "Bug Fixes" },
+    "perf": { "title": "Performance" },
+    "refactor": { "title": "Refactors" },
+    "docs": { "title": "Documentation" },
+    "build": { "title": "Build" },
+    "chore": { "title": "Chore", "semver": false },
+    "test": { "title": "Tests", "semver": false },
+    "ci": { "title": "CI", "semver": false }
+  },
+  "publish": {
+    "private": true,
+    "tag": "latest"
+  },
+  "hooks": {
+    "afterBump": "bun scripts/sync-versions.ts"
+  }
+}

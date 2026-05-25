@@ -1,0 +1,37 @@
+{
+  "name": "@xantiagoma/dokploy-sst",
+  "version": "0.0.0",
+  "description": "High-level SST/Pulumi components for Dokploy — declarative Docker Compose deployments",
+  "type": "module",
+  "license": "MIT",
+  "author": "Santiago Montoya <xantiagoma@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xantiagoma/dokploy-deploy.git",
+    "directory": "packages/sst"
+  },
+  "keywords": ["dokploy", "sst", "pulumi", "iac", "infrastructure", "docker", "compose"],
+  "files": ["dist", "README.md"],
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.mts"
+    }
+  },
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "scripts": {
+    "build": "tsdown",
+    "check-types": "bunx --bun tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@xantiagoma/dokploy-api": "workspace:*",
+    "@xantiagoma/dokploy-pulumi": "workspace:*",
+    "@pulumi/pulumi": "catalog:"
+  },
+  "devDependencies": {
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
+  }
+}

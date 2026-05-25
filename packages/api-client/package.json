@@ -1,0 +1,32 @@
+{
+  "name": "@xantiagoma/dokploy-api",
+  "version": "0.0.0",
+  "description": "Typed HTTP client for the Dokploy tRPC API",
+  "type": "module",
+  "license": "MIT",
+  "author": "Santiago Montoya <xantiagoma@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xantiagoma/dokploy-deploy.git",
+    "directory": "packages/api-client"
+  },
+  "keywords": ["dokploy", "api", "trpc", "client", "paas", "docker"],
+  "files": ["dist", "README.md"],
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.mts"
+    }
+  },
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "scripts": {
+    "build": "tsdown",
+    "check-types": "bunx --bun tsc --noEmit",
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
+  }
+}

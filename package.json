@@ -1,0 +1,31 @@
+{
+  "name": "dokploy-deploy",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": {
+    "packages": ["packages/*", "test-e2e"],
+    "catalog": {
+      "@pulumi/pulumi": "^3.175.0",
+      "tsdown": "^0.22.0",
+      "typescript": "^5.8.3"
+    }
+  },
+  "scripts": {
+    "build": "bun run --filter './packages/*' build",
+    "check-types": "bun run --filter './packages/*' check-types",
+    "test": "bun test",
+    "release": "changelogen --release --push",
+    "sync-versions": "bun scripts/sync-versions.ts",
+    "changelog": "changelogen --no-output"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xantiagoma/dokploy-deploy"
+  },
+  "devDependencies": {
+    "changelogen": "^0.6.2",
+    "tsdown": "catalog:",
+    "tsx": "^4.22.3",
+    "unrun": "^0.3.0"
+  }
+}

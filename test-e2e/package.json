@@ -1,0 +1,10 @@
+{
+  "name": "dokploy-e2e-test",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@pulumi/pulumi": "catalog:",
+    "@xantiagoma/dokploy-pulumi": "workspace:*",
+    "@xantiagoma/dokploy-sst": "workspace:*"
+  }
+}

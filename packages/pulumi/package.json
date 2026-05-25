@@ -1,0 +1,36 @@
+{
+  "name": "@xantiagoma/dokploy-pulumi",
+  "version": "0.0.0",
+  "description": "Pulumi dynamic provider for Dokploy — manage projects, compose services, and domains as code",
+  "type": "module",
+  "license": "MIT",
+  "author": "Santiago Montoya <xantiagoma@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xantiagoma/dokploy-deploy.git",
+    "directory": "packages/pulumi"
+  },
+  "keywords": ["dokploy", "pulumi", "iac", "infrastructure", "docker", "compose"],
+  "files": ["dist", "README.md"],
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.mts"
+    }
+  },
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "scripts": {
+    "build": "tsdown",
+    "check-types": "bunx --bun tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@xantiagoma/dokploy-api": "workspace:*",
+    "@pulumi/pulumi": "catalog:"
+  },
+  "devDependencies": {
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
+  }
+}

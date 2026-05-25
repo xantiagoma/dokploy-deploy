@@ -1,0 +1,7 @@
+name: dokploy-e2e-test
+runtime:
+  name: nodejs
+  options:
+    packagemanager: bun
+    nodeargs: "--import tsx"
+description: E2E test for dokploy-pulumi provider
