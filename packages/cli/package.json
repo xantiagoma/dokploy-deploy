@@ -39,7 +39,7 @@
     "check-types": "bunx --bun tsc --noEmit"
   },
   "dependencies": {
-    "@xantiagoma/dokploy-api": "^0.0.2",
+    "@xantiagoma/dokploy-api": "workspace:*",
     "citty": "^0.2.2",
     "ts-morph": "^28.0.0"
   },

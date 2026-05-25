@@ -39,8 +39,8 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@xantiagoma/dokploy-api": "^0.0.2",
-    "@xantiagoma/dokploy-pulumi": "^0.0.2",
+    "@xantiagoma/dokploy-api": "workspace:*",
+    "@xantiagoma/dokploy-pulumi": "workspace:*",
     "@pulumi/pulumi": "catalog:"
   },
   "devDependencies": {

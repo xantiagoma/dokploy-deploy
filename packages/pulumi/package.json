@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@pulumi/pulumi": "catalog:",
-    "@xantiagoma/dokploy-api": "^0.0.2"
+    "@xantiagoma/dokploy-api": "workspace:*"
   },
   "devDependencies": {
     "tsdown": "catalog:",

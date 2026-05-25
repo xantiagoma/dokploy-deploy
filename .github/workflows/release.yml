@@ -32,6 +32,13 @@ jobs:
       - name: Create GitHub Release
         run: bunx changelogen gh release --token ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Resolve workspace references for publish
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          for pkg in packages/*/package.json; do
+            sed -i "s/\"workspace:\*\"/\"^$VERSION\"/g" "$pkg"
+          done
+
       - name: Publish to npm
         run: |
           cd packages/api-client && npm publish --access public --provenance || true
