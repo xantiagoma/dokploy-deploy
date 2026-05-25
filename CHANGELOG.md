@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.0.5
+
+[compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.4...v0.0.5)
+
+### 🚀 Enhancements
+
+- **pulumi:** Adopt existing resources on create ([f7824cc](https://github.com/xantiagoma/dokploy-deploy/commit/f7824cc))
+
+### 🩹 Fixes
+
+- Use annotated tags so git push --follow-tags works ([c7425fa](https://github.com/xantiagoma/dokploy-deploy/commit/c7425fa))
+
+### ❤️ Contributors
+
+- Santiago Montoya ([@xantiagoma](https://github.com/xantiagoma))
+
 ## v0.0.4
 
 [compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.3...v0.0.4)
