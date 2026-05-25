@@ -1,6 +1,6 @@
 {
   "name": "@xantiagoma/dokploy",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "CLI for Dokploy — import infrastructure as code, manage resources",
   "type": "module",
   "license": "MIT",
@@ -39,7 +39,7 @@
     "check-types": "bunx --bun tsc --noEmit"
   },
   "dependencies": {
-    "@xantiagoma/dokploy-api": "workspace:*",
+    "@xantiagoma/dokploy-api": "^0.0.2",
     "citty": "^0.2.2",
     "ts-morph": "^28.0.0"
   },

@@ -17,7 +17,7 @@
     "build": "bun run --filter './packages/*' build",
     "check-types": "bun run --filter './packages/*' check-types",
     "test": "bun test",
-    "release": "changelogen --release --push",
+    "release": "bun scripts/release.ts",
     "sync-versions": "bun scripts/sync-versions.ts",
     "changelog": "changelogen --no-output"
   },

@@ -1,6 +1,6 @@
 {
   "name": "@xantiagoma/dokploy-pulumi",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Pulumi dynamic provider for Dokploy — manage projects, compose services, and domains as code",
   "type": "module",
   "license": "MIT",
@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@pulumi/pulumi": "catalog:",
-    "@xantiagoma/dokploy-api": "workspace:*"
+    "@xantiagoma/dokploy-api": "^0.0.2"
   },
   "devDependencies": {
     "tsdown": "catalog:",

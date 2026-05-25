@@ -1,6 +1,6 @@
 {
   "name": "@xantiagoma/dokploy-sst",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "High-level SST/Pulumi components for Dokploy — declarative Docker Compose deployments",
   "type": "module",
   "license": "MIT",
@@ -39,8 +39,8 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@xantiagoma/dokploy-api": "workspace:*",
-    "@xantiagoma/dokploy-pulumi": "workspace:*",
+    "@xantiagoma/dokploy-api": "^0.0.2",
+    "@xantiagoma/dokploy-pulumi": "^0.0.2",
     "@pulumi/pulumi": "catalog:"
   },
   "devDependencies": {
