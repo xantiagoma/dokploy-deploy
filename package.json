@@ -1,9 +1,12 @@
 {
   "name": "dokploy-deploy",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "workspaces": {
-    "packages": ["packages/*", "test-e2e"],
+    "packages": [
+      "packages/*",
+      "test-e2e"
+    ],
     "catalog": {
       "@pulumi/pulumi": "^3.175.0",
       "tsdown": "^0.22.0",
