@@ -28,7 +28,7 @@ const version = rootPkg.version;
 
 run(`git add -A`);
 run(`git commit -m "chore(release): v${version}"`);
-run(`git tag v${version}`);
+run(`git tag -a v${version} -m "v${version}"`);
 run(`git push --follow-tags`);
 
 console.log(`\nReleased v${version}`);
