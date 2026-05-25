@@ -1,11 +1,12 @@
 import * as pulumi from "@pulumi/pulumi";
-import { getClient, diffProps } from "./provider-utils.ts";
 import type { ComposeSourceType } from "@xantiagoma/dokploy-api";
+import { getClient, diffProps } from "./provider-utils.ts";
+
+type ComposeUpdateInput = Parameters<ReturnType<typeof getClient>["compose"]["update"]>[0];
 
 interface ComposeProviderInputs {
   name: string;
-  projectId: string;
-  environmentId?: string;
+  environmentId: string;
   description?: string;
   env?: string;
   composeFile?: string;
@@ -21,78 +22,65 @@ interface ComposeProviderInputs {
   customGitSSHKeyId?: string;
 }
 
+const UPDATE_FIELDS = [
+  "env", "composeFile", "composePath", "sourceType",
+  "repository", "owner", "branch", "autoDeploy", "githubId",
+  "customGitUrl", "customGitBranch", "customGitSSHKeyId",
+] as const;
+
+function buildUpdatePayload(base: Pick<ComposeUpdateInput, "composeId" | "name" | "description">, inputs: ComposeProviderInputs): ComposeUpdateInput {
+  const payload = { ...base } as ComposeUpdateInput;
+  for (const field of UPDATE_FIELDS) {
+    if (inputs[field] !== undefined) {
+      (payload as Record<string, unknown>)[field] = inputs[field];
+    }
+  }
+  return payload;
+}
+
 const composeProvider: pulumi.dynamic.ResourceProvider = {
   async create(inputs: ComposeProviderInputs) {
     const client = getClient();
 
     const compose = await client.compose.create({
       name: inputs.name,
-      projectId: inputs.projectId,
       environmentId: inputs.environmentId,
       description: inputs.description,
     });
 
-    const updatePayload: Record<string, unknown> = {
-      composeId: compose.composeId,
-    };
-
-    const updateFields = [
-      "env",
-      "composeFile",
-      "composePath",
-      "sourceType",
-      "repository",
-      "owner",
-      "branch",
-      "autoDeploy",
-      "githubId",
-      "customGitUrl",
-      "customGitBranch",
-      "customGitSSHKeyId",
-    ] as const;
-
-    for (const field of updateFields) {
-      if (inputs[field] !== undefined) {
-        updatePayload[field] = inputs[field];
-      }
-    }
-
+    // compose.create only accepts a few fields — apply the rest via update
+    const updatePayload = buildUpdatePayload({ composeId: compose.composeId }, inputs);
     if (Object.keys(updatePayload).length > 1) {
-      await client.compose.update(
-        updatePayload as unknown as Parameters<typeof client.compose.update>[0],
-      );
+      await client.compose.update(updatePayload);
     }
 
     return {
       id: compose.composeId,
-      outs: {
-        ...inputs,
-        composeId: compose.composeId,
-      },
+      outs: { ...inputs, composeId: compose.composeId, appName: compose.appName },
     };
   },
 
   async read(id: string, props: ComposeProviderInputs) {
     const client = getClient();
     try {
-      const compose = await client.compose.one({ composeId: id });
+      const c = await client.compose.one({ composeId: id });
       return {
         id,
         props: {
-          name: compose.name,
-          projectId: compose.projectId,
-          environmentId: compose.environmentId ?? undefined,
-          description: compose.description ?? undefined,
-          env: compose.env ?? undefined,
-          composeFile: compose.composeFile ?? undefined,
-          composePath: compose.composePath ?? undefined,
-          sourceType: compose.sourceType,
-          repository: compose.repository ?? undefined,
-          owner: compose.owner ?? undefined,
-          branch: compose.branch ?? undefined,
-          autoDeploy: compose.autoDeploy,
-          githubId: compose.githubId ?? undefined,
-          composeId: compose.composeId,
+          name: c.name,
+          environmentId: c.environmentId,
+          description: c.description ?? undefined,
+          env: c.env ?? undefined,
+          composeFile: c.composeFile ?? undefined,
+          composePath: c.composePath ?? undefined,
+          sourceType: c.sourceType as ComposeSourceType,
+          repository: c.repository ?? undefined,
+          owner: c.owner ?? undefined,
+          branch: c.branch ?? undefined,
+          autoDeploy: c.autoDeploy,
+          githubId: c.githubId ?? undefined,
+          composeId: c.composeId,
+          appName: c.appName,
         },
       };
     } catch {
@@ -100,68 +88,27 @@ const composeProvider: pulumi.dynamic.ResourceProvider = {
     }
   },
 
-  async update(
-    id: string,
-    _olds: ComposeProviderInputs,
-    news: ComposeProviderInputs,
-  ) {
+  async update(id: string, olds: Record<string, unknown>, news: ComposeProviderInputs) {
     const client = getClient();
-
-    const updatePayload: Record<string, unknown> = { composeId: id };
-
-    const updateFields = [
-      "name",
-      "description",
-      "env",
-      "composeFile",
-      "composePath",
-      "sourceType",
-      "repository",
-      "owner",
-      "branch",
-      "autoDeploy",
-      "githubId",
-      "customGitUrl",
-      "customGitBranch",
-      "customGitSSHKeyId",
-    ] as const;
-
-    for (const field of updateFields) {
-      if (news[field] !== undefined) {
-        updatePayload[field] = news[field];
-      }
-    }
-
-    await client.compose.update(
-      updatePayload as unknown as Parameters<typeof client.compose.update>[0],
-    );
+    const updatePayload = buildUpdatePayload({ composeId: id, name: news.name, description: news.description }, news);
+    await client.compose.update(updatePayload);
 
     return {
-      outs: {
-        ...news,
-        composeId: id,
-      },
+      outs: { ...news, composeId: id, appName: olds["appName"] as string },
     };
   },
 
   async delete(id: string) {
     const client = getClient();
     try {
-      await client.compose.delete({ composeId: id });
+      await client.compose.delete({ composeId: id, deleteVolumes: false });
     } catch {
       // Already deleted
     }
   },
 
-  async diff(
-    _id: string,
-    olds: Record<string, unknown>,
-    news: Record<string, unknown>,
-  ) {
-    const { changes, replaces } = diffProps(olds, news, [
-      "projectId",
-      "environmentId",
-    ]);
+  async diff(_id: string, olds: Record<string, unknown>, news: Record<string, unknown>) {
+    const { changes, replaces } = diffProps(olds, news, ["environmentId"]);
     return { changes, replaces, deleteBeforeReplace: true };
   },
 };
@@ -173,7 +120,6 @@ const composeProvider: pulumi.dynamic.ResourceProvider = {
  * ```ts
  * const server = new dokploy.Compose("server", {
  *   name: "server",
- *   projectId: project.projectId,
  *   environmentId: project.productionEnvironmentId,
  *   sourceType: "github",
  *   owner: "myorg",
@@ -188,10 +134,8 @@ const composeProvider: pulumi.dynamic.ResourceProvider = {
 export interface ComposeArgs {
   /** Service name displayed in the Dokploy dashboard */
   name: pulumi.Input<string>;
-  /** Project ID this service belongs to */
-  projectId: pulumi.Input<string>;
-  /** Environment ID (defaults to the project's production environment) */
-  environmentId?: pulumi.Input<string>;
+  /** Environment ID (required — get from project.productionEnvironmentId) */
+  environmentId: pulumi.Input<string>;
   /** Optional service description */
   description?: pulumi.Input<string>;
   /** Newline-separated `KEY=value` env vars */
@@ -200,7 +144,7 @@ export interface ComposeArgs {
   composeFile?: pulumi.Input<string>;
   /** Path to docker-compose file in the repo */
   composePath?: pulumi.Input<string>;
-  /** Source type: `"github"`, `"gitlab"`, `"bitbucket"`, `"raw"`, or `"git"` */
+  /** Source type: `"github"`, `"gitlab"`, `"bitbucket"`, `"gitea"`, `"raw"`, or `"git"` */
   sourceType?: pulumi.Input<ComposeSourceType>;
   /** GitHub repository name */
   repository?: pulumi.Input<string>;
@@ -224,7 +168,7 @@ export interface ComposeArgs {
  * A Docker Compose service managed by Dokploy.
  *
  * Supports GitHub, GitLab, Bitbucket, custom git, and raw compose file sources.
- * Changing `projectId` or `environmentId` triggers a replacement (delete + create).
+ * Changing `environmentId` triggers a replacement (delete + create).
  *
  * @example
  * ```ts
@@ -232,7 +176,6 @@ export interface ComposeArgs {
  *
  * const server = new dokploy.Compose("server", {
  *   name: "server",
- *   projectId: project.projectId,
  *   environmentId: project.productionEnvironmentId,
  *   sourceType: "github",
  *   owner: "xantiagoma",
@@ -247,9 +190,10 @@ export interface ComposeArgs {
 export class Compose extends pulumi.dynamic.Resource {
   /** The Dokploy compose service ID */
   public readonly composeId!: pulumi.Output<string>;
+  /** Docker internal hostname for this service */
+  public readonly appName!: pulumi.Output<string>;
   public readonly name!: pulumi.Output<string>;
-  public readonly projectId!: pulumi.Output<string>;
-  public readonly environmentId!: pulumi.Output<string | undefined>;
+  public readonly environmentId!: pulumi.Output<string>;
   public readonly description!: pulumi.Output<string | undefined>;
   public readonly env!: pulumi.Output<string | undefined>;
   public readonly composeFile!: pulumi.Output<string | undefined>;
@@ -261,19 +205,7 @@ export class Compose extends pulumi.dynamic.Resource {
   public readonly autoDeploy!: pulumi.Output<boolean | undefined>;
   public readonly githubId!: pulumi.Output<string | undefined>;
 
-  constructor(
-    name: string,
-    args: ComposeArgs,
-    opts?: pulumi.CustomResourceOptions,
-  ) {
-    super(
-      composeProvider,
-      name,
-      {
-        composeId: undefined,
-        ...args,
-      },
-      opts,
-    );
+  constructor(name: string, args: ComposeArgs, opts?: pulumi.CustomResourceOptions) {
+    super(composeProvider, name, { composeId: undefined, appName: undefined, ...args }, opts);
   }
 }

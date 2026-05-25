@@ -6,9 +6,9 @@ Declarative Infrastructure as Code for [Dokploy](https://dokploy.com) — manage
 
 | Package | Description | npm |
 |---------|-------------|-----|
-| [`@xantiagoma/dokploy-api`](./packages/api-client) | Typed HTTP client for the Dokploy tRPC API | [![npm](https://img.shields.io/npm/v/@xantiagoma/dokploy-api)](https://www.npmjs.com/package/@xantiagoma/dokploy-api) |
-| [`@xantiagoma/dokploy-pulumi`](./packages/pulumi) | Pulumi dynamic provider (Project, Compose, Domain) | [![npm](https://img.shields.io/npm/v/@xantiagoma/dokploy-pulumi)](https://www.npmjs.com/package/@xantiagoma/dokploy-pulumi) |
-| [`@xantiagoma/dokploy-sst`](./packages/sst) | High-level SST/Pulumi components | [![npm](https://img.shields.io/npm/v/@xantiagoma/dokploy-sst)](https://www.npmjs.com/package/@xantiagoma/dokploy-sst) |
+| [`@xantiagoma/dokploy-api`](./packages/api-client) | Typed HTTP client — 526 endpoints, 48 routers, codegen'd from OpenAPI | [![npm](https://img.shields.io/npm/v/@xantiagoma/dokploy-api)](https://www.npmjs.com/package/@xantiagoma/dokploy-api) |
+| [`@xantiagoma/dokploy-pulumi`](./packages/pulumi) | Pulumi dynamic provider — 30 resources, pure TypeScript, no Terraform | [![npm](https://img.shields.io/npm/v/@xantiagoma/dokploy-pulumi)](https://www.npmjs.com/package/@xantiagoma/dokploy-pulumi) |
+| [`@xantiagoma/dokploy-sst`](./packages/sst) | High-level SST/Pulumi components — 12 components with sensible defaults | [![npm](https://img.shields.io/npm/v/@xantiagoma/dokploy-sst)](https://www.npmjs.com/package/@xantiagoma/dokploy-sst) |
 
 ## Why?
 
@@ -17,12 +17,19 @@ Dokploy is a great self-hosted PaaS, but it lacks a proper IaC story. The existi
 ## Quick Start
 
 ```bash
+# API client only
 bun add @xantiagoma/dokploy-api
-# or for IaC:
+
+# Pulumi IaC (includes API client)
 bun add @xantiagoma/dokploy-pulumi
+
+# High-level SST components (includes Pulumi + API client)
+bun add @xantiagoma/dokploy-sst
 ```
 
-### API Client
+### Layer 1 — API Client
+
+Direct typed access to every Dokploy endpoint:
 
 ```ts
 import { createDokployClient } from "@xantiagoma/dokploy-api";
@@ -34,9 +41,12 @@ const client = createDokployClient({
 
 const projects = await client.project.all();
 await client.compose.deploy({ composeId: "..." });
+await client.postgres.create({ name: "db", environmentId: "...", databaseName: "app", databaseUser: "user", databasePassword: "secret" });
 ```
 
-### Pulumi Provider
+### Layer 2 — Pulumi Provider
+
+Manage Dokploy resources with full CRUD, drift detection, and replacement logic:
 
 ```ts
 import * as dokploy from "@xantiagoma/dokploy-pulumi";
@@ -48,7 +58,6 @@ const project = new dokploy.Project("my-app", {
 
 const server = new dokploy.Compose("server", {
   name: "server",
-  projectId: project.projectId,
   environmentId: project.productionEnvironmentId,
   sourceType: "github",
   owner: "myorg",
@@ -66,28 +75,70 @@ new dokploy.Domain("api", {
   port: 3000,
   https: true,
   certificateType: "letsencrypt",
+  domainType: "compose",
 });
+
+const db = new dokploy.Postgres("app-db", {
+  name: "app-db",
+  environmentId: project.productionEnvironmentId,
+  databaseName: "appdb",
+  databaseUser: "appuser",
+  databasePassword: "supersecret",
+});
+
+// appName is the Docker-internal hostname (stable, use in connection strings)
+export const dbHost = db.appName;
+// externalPort is the internet-facing port (undefined if not configured)
+export const dbPort = db.externalPort;
 ```
 
-### SST Components
+### Layer 3 — SST Components
+
+Opinionated wrappers with env-as-object, auto domains, backup shortcuts, and `projectRef()`/`envRef()` helpers:
 
 ```ts
-import { DokployProject, DokployCompose } from "@xantiagoma/dokploy-sst";
+import { DokployProject, DokployCompose, DokployPostgres, DokployDestination, projectRef } from "@xantiagoma/dokploy-sst";
 
 const project = new DokployProject("my-app", {
-  env: { DATABASE_URL: "postgres://..." },
+  env: { DATABASE_URL: "postgres://...", REDIS_URL: "redis://..." },
+});
+
+const destination = new DokployDestination("backups", {
+  name: "backups",
+  provider: "cloudflare",
+  accessKey: "key-id",
+  secretAccessKey: config.requireSecret("r2Secret"),
+  bucket: "my-backups",
+  region: "auto",
+  endpoint: "https://<account>.r2.cloudflarestorage.com",
+  additionalFlags: [],
+});
+
+const db = new DokployPostgres("app-db", {
+  environmentId: project.productionEnvironmentId,
+  databaseName: "appdb",
+  databaseUser: "appuser",
+  databasePassword: config.requireSecret("dbPassword"),
+  backup: {
+    schedule: "0 3 * * *",
+    prefix: "prod-pg",
+    destinationId: destination.destinationId,
+    keepLatestCount: 14,
+  },
 });
 
 new DokployCompose("server", {
-  project: "my-app",
-  projectId: project.projectId,
   environmentId: project.productionEnvironmentId,
-  composePath: "./docker-compose.yml",
+  composePath: "./docker-compose-server.yml",
   github: { owner: "myorg", repo: "myrepo" },
-  env: { NODE_ENV: "production" },
+  env: {
+    NODE_ENV: "production",
+    DATABASE_URL: projectRef("DATABASE_URL"),
+  },
   autoDeploy: true,
   domains: [
     { host: "api.example.com", serviceName: "api", port: 3000 },
+    { host: "app.example.com", serviceName: "web", port: 5173 },
   ],
 });
 ```
@@ -99,14 +150,112 @@ new DokployCompose("server", {
 | `DOKPLOY_URL` | Dokploy instance URL (e.g. `https://dokploy.example.com`) |
 | `DOKPLOY_API_KEY` | API key from Dashboard > Settings > Profile > API/CLI |
 
+## Resources
+
+### Pulumi Resources (30 total)
+
+| Category | Resources |
+|----------|-----------|
+| **Project & Environments** | `Project`, `Environment` |
+| **Services** | `Compose`, `Application` |
+| **Routing** | `Domain`, `Port`, `Mount`, `Redirect`, `Security` |
+| **Databases** | `Postgres`, `Mysql`, `Mariadb`, `Mongo`, `Redis`, `Libsql` |
+| **Backups** | `Backup`, `VolumeBackup`, `Schedule`, `Destination` |
+| **Infrastructure** | `Server`, `SshKey`, `Registry`, `Certificate` |
+| **Tags** | `Tag` |
+| **Notifications** | `SlackNotification`, `TelegramNotification`, `DiscordNotification`, `EmailNotification`, `GotifyNotification`, `NtfyNotification`, `MattermostNotification`, `CustomNotification`, `LarkNotification`, `TeamsNotification`, `PushoverNotification`, `ResendNotification` |
+
+### SST Components (12 total)
+
+| Component | Description |
+|-----------|-------------|
+| `DokployProject` | Project + production environment |
+| `DokployCompose` | Docker Compose service + domains |
+| `DokployApplication` | Single-container service + domains + ports + mounts |
+| `DokployPostgres` | PostgreSQL + optional scheduled backup |
+| `DokployMysql` | MySQL + optional scheduled backup |
+| `DokployMariadb` | MariaDB + optional scheduled backup |
+| `DokployMongo` | MongoDB + optional scheduled backup |
+| `DokployRedis` | Redis + optional scheduled backup |
+| `DokployDestination` | S3-compatible backup storage target |
+| `DokployServer` | Remote server registration |
+| `DokployRegistry` | Docker registry for private images |
+| `DokployCertificate` | Custom SSL certificate |
+
 ## Architecture
 
+```mermaid
+graph TB
+    subgraph dokploy["Dokploy Instance (self-hosted PaaS)"]
+        api["tRPC API\n526 routes · 48 routers"]
+    end
+
+    subgraph monorepo["dokploy-deploy monorepo"]
+        subgraph api-client["@xantiagoma/dokploy-api"]
+            openapi["OpenAPI spec\ndocs.dokploy.com/openapi.json"]
+            codegen["openapi-typescript codegen"]
+            generated["generated.ts\n526 typed operations"]
+            client["createDokployClient()\n48 router namespaces + client.raw"]
+
+            openapi --> codegen --> generated --> client
+        end
+
+        subgraph pulumi-pkg["@xantiagoma/dokploy-pulumi"]
+            dynamic["Pulumi Dynamic Provider\nPure TypeScript — no Terraform"]
+            resources["30 resources\ncreate / read / update / delete / diff"]
+
+            dynamic --> resources
+        end
+
+        subgraph sst-pkg["@xantiagoma/dokploy-sst"]
+            components["12 High-level ComponentResource wrappers"]
+            helpers["projectRef() · envRef()\nenv-as-object · auto backup wiring"]
+
+            components --> helpers
+        end
+    end
+
+    subgraph your-project["Your Project"]
+        infra["infra/ directory\npulumi up · sst deploy"]
+    end
+
+    client -- "HTTP query/mutate" --> api
+    pulumi-pkg -- "imports" --> api-client
+    sst-pkg -- "imports" --> pulumi-pkg
+    infra --> sst-pkg
+
+    style dokploy fill:#1a1a2e,color:#fff
+    style api fill:#16213e,color:#fff
+    style monorepo fill:#0f3460,color:#fff
+    style api-client fill:#533483,color:#fff
+    style pulumi-pkg fill:#e94560,color:#fff
+    style sst-pkg fill:#f5a623,color:#000
+    style your-project fill:#0a9396,color:#fff
 ```
-@xantiagoma/dokploy-api    <- typed HTTP client for Dokploy tRPC API
-  ^
-@xantiagoma/dokploy-pulumi <- Pulumi dynamic provider (create/read/update/delete)
-  ^
-@xantiagoma/dokploy-sst    <- high-level SST components
+
+### Dependency graph
+
+```mermaid
+graph BT
+    api["@xantiagoma/dokploy-api\nstandalone HTTP client"]
+    pulumi["@xantiagoma/dokploy-pulumi\nPulumi dynamic provider"]
+    sst["@xantiagoma/dokploy-sst\nSST components"]
+    pulumi-sdk["@pulumi/pulumi"]
+
+    pulumi --> api
+    pulumi --> pulumi-sdk
+    sst --> pulumi
+    sst --> api
+    sst --> pulumi-sdk
+```
+
+### Codegen & build pipeline
+
+```mermaid
+flowchart LR
+    spec["OpenAPI spec\ndocs.dokploy.com/openapi.json"] -- "bun run generate" --> gen["generated.ts\n526 typed inputs\n+ generated-routers.ts\n48 typed routers"]
+    gen -- "tsdown build" --> dist["dist/index.mjs\ndist/index.d.mts"]
+    dist -- "npm publish" --> npm["npm registry\n@xantiagoma/dokploy-*"]
 ```
 
 ## Development

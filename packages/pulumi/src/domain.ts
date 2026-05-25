@@ -1,6 +1,6 @@
 import * as pulumi from "@pulumi/pulumi";
+import type { CertificateType, DomainType } from "@xantiagoma/dokploy-api";
 import { getClient, diffProps } from "./provider-utils.ts";
-import type { CertificateType } from "@xantiagoma/dokploy-api";
 
 interface DomainProviderInputs {
   host: string;
@@ -9,7 +9,7 @@ interface DomainProviderInputs {
   https?: boolean;
   certificateType?: CertificateType;
   serviceName?: string;
-  domainType?: string;
+  domainType?: DomainType;
   applicationId?: string;
   composeId?: string;
 }
@@ -18,43 +18,40 @@ const domainProvider: pulumi.dynamic.ResourceProvider = {
   async create(inputs: DomainProviderInputs) {
     const client = getClient();
     const domain = await client.domain.create({
-      host: inputs.host,
-      path: inputs.path,
-      port: inputs.port,
-      https: inputs.https,
-      certificateType: inputs.certificateType,
-      serviceName: inputs.serviceName,
-      domainType: inputs.domainType,
-      applicationId: inputs.applicationId,
-      composeId: inputs.composeId,
-    });
+        host: inputs.host,
+        path: inputs.path,
+        port: inputs.port,
+        https: inputs.https,
+        certificateType: inputs.certificateType,
+        serviceName: inputs.serviceName,
+        domainType: inputs.domainType,
+        applicationId: inputs.applicationId,
+        composeId: inputs.composeId,
+      });
 
     return {
       id: domain.domainId,
-      outs: {
-        ...inputs,
-        domainId: domain.domainId,
-      },
+      outs: { ...inputs, domainId: domain.domainId },
     };
   },
 
   async read(id: string, props: DomainProviderInputs) {
     const client = getClient();
     try {
-      const domain = await client.domain.one({ domainId: id });
+      const d = await client.domain.one({ domainId: id });
       return {
         id,
         props: {
-          host: domain.host,
-          path: domain.path ?? undefined,
-          port: domain.port ?? undefined,
-          https: domain.https,
-          certificateType: domain.certificateType,
-          serviceName: domain.serviceName ?? undefined,
-          domainType: domain.domainType ?? undefined,
-          applicationId: domain.applicationId ?? undefined,
-          composeId: domain.composeId ?? undefined,
-          domainId: domain.domainId,
+          host: d.host,
+          path: d.path ?? undefined,
+          port: d.port ?? undefined,
+          https: d.https,
+          certificateType: d.certificateType as CertificateType,
+          serviceName: d.serviceName ?? undefined,
+          domainType: (d.domainType ?? undefined) as DomainType | undefined,
+          applicationId: d.applicationId ?? undefined,
+          composeId: d.composeId ?? undefined,
+          domainId: d.domainId,
         },
       };
     } catch {
@@ -62,11 +59,7 @@ const domainProvider: pulumi.dynamic.ResourceProvider = {
     }
   },
 
-  async update(
-    id: string,
-    _olds: DomainProviderInputs,
-    news: DomainProviderInputs,
-  ) {
+  async update(id: string, _olds: DomainProviderInputs, news: DomainProviderInputs) {
     const client = getClient();
     await client.domain.update({
       domainId: id,
@@ -80,10 +73,7 @@ const domainProvider: pulumi.dynamic.ResourceProvider = {
     });
 
     return {
-      outs: {
-        ...news,
-        domainId: id,
-      },
+      outs: { ...news, domainId: id },
     };
   },
 
@@ -96,15 +86,8 @@ const domainProvider: pulumi.dynamic.ResourceProvider = {
     }
   },
 
-  async diff(
-    _id: string,
-    olds: Record<string, unknown>,
-    news: Record<string, unknown>,
-  ) {
-    const { changes, replaces } = diffProps(olds, news, [
-      "applicationId",
-      "composeId",
-    ]);
+  async diff(_id: string, olds: Record<string, unknown>, news: Record<string, unknown>) {
+    const { changes, replaces } = diffProps(olds, news, ["applicationId", "composeId"]);
     return { changes, replaces, deleteBeforeReplace: true };
   },
 };
@@ -133,12 +116,12 @@ export interface DomainArgs {
   port?: pulumi.Input<number>;
   /** Enable HTTPS */
   https?: pulumi.Input<boolean>;
-  /** SSL certificate strategy: `"letsencrypt"` or `"none"` */
+  /** SSL certificate strategy: `"letsencrypt"`, `"none"`, or `"custom"` */
   certificateType?: pulumi.Input<CertificateType>;
   /** Docker Compose service name to route to */
   serviceName?: pulumi.Input<string>;
-  /** Domain type */
-  domainType?: pulumi.Input<string>;
+  /** Domain type: `"compose"`, `"application"`, or `"preview"` */
+  domainType?: pulumi.Input<DomainType>;
   /** Application ID (for application-type services) */
   applicationId?: pulumi.Input<string>;
   /** Compose service ID (for compose-type services) */
@@ -172,27 +155,13 @@ export class Domain extends pulumi.dynamic.Resource {
   public readonly path!: pulumi.Output<string | undefined>;
   public readonly port!: pulumi.Output<number | undefined>;
   public readonly https!: pulumi.Output<boolean | undefined>;
-  public readonly certificateType!: pulumi.Output<
-    CertificateType | undefined
-  >;
+  public readonly certificateType!: pulumi.Output<CertificateType | undefined>;
   public readonly serviceName!: pulumi.Output<string | undefined>;
-  public readonly domainType!: pulumi.Output<string | undefined>;
+  public readonly domainType!: pulumi.Output<DomainType | undefined>;
   public readonly applicationId!: pulumi.Output<string | undefined>;
   public readonly composeId!: pulumi.Output<string | undefined>;
 
-  constructor(
-    name: string,
-    args: DomainArgs,
-    opts?: pulumi.CustomResourceOptions,
-  ) {
-    super(
-      domainProvider,
-      name,
-      {
-        domainId: undefined,
-        ...args,
-      },
-      opts,
-    );
+  constructor(name: string, args: DomainArgs, opts?: pulumi.CustomResourceOptions) {
+    super(domainProvider, name, { domainId: undefined, ...args }, opts);
   }
 }

@@ -1,5 +1,6 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as dokploy from "@xantiagoma/dokploy-pulumi";
+import { envToString } from "./utils.ts";
 
 /**
  * Arguments for the {@link DokployProject} component.
@@ -22,18 +23,11 @@ export interface DokployProjectArgs {
   env?: pulumi.Input<Record<string, string>> | pulumi.Input<string>;
 }
 
-function envToString(env: Record<string, string> | string): string {
-  if (typeof env === "string") return env;
-  return Object.entries(env)
-    .map(([k, v]) => `${k}=${v}`)
-    .join("\n");
-}
-
 /**
  * High-level component that creates a Dokploy project.
  *
- * Wraps {@link dokploy.Project} with a friendlier API. Exposes the
- * auto-created production environment ID for use with compose services.
+ * Exposes the auto-created production environment ID for use with
+ * {@link DokployCompose} services.
  *
  * @example
  * ```ts
@@ -45,8 +39,6 @@ function envToString(env: Record<string, string> | string): string {
  * });
  *
  * new DokployCompose("server", {
- *   project: "demi",
- *   projectId: project.projectId,
  *   environmentId: project.productionEnvironmentId,
  *   // ...
  * });
@@ -60,11 +52,7 @@ export class DokployProject extends pulumi.ComponentResource {
   /** The auto-created production environment ID */
   public readonly productionEnvironmentId: pulumi.Output<string>;
 
-  constructor(
-    name: string,
-    args?: DokployProjectArgs,
-    opts?: pulumi.ComponentResourceOptions,
-  ) {
+  constructor(name: string, args?: DokployProjectArgs, opts?: pulumi.ComponentResourceOptions) {
     super("dokploy:index:DokployProject", name, {}, opts);
 
     const envStr = args?.env
@@ -73,11 +61,7 @@ export class DokployProject extends pulumi.ComponentResource {
 
     this.project = new dokploy.Project(
       `${name}-project`,
-      {
-        name: args?.name ?? name,
-        description: args?.description,
-        env: envStr,
-      },
+      { name: args?.name ?? name, description: args?.description, env: envStr },
       { parent: this },
     );
 

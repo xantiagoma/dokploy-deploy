@@ -20,12 +20,13 @@ describe.skipIf(skip)("DokployClient (integration)", () => {
   });
 
   test("project.all returns array", async () => {
+    // project.all is in ResponseMap → returns ProjectResponse[] automatically
     const projects = await client.project.all();
     expect(Array.isArray(projects)).toBe(true);
   });
 
   test("project.create + one + update + remove", async () => {
-    // Create — returns {project, environment}
+    // project.create is in ResponseMap → returns CreateProjectResponse
     const result = await client.project.create({
       name: `test-${Date.now()}`,
       description: "Integration test project",
@@ -34,36 +35,35 @@ describe.skipIf(skip)("DokployClient (integration)", () => {
     testProjectId = result.project.projectId;
     testEnvironmentId = result.environment.environmentId;
 
-    // Read
+    // project.one → ProjectResponse
     const fetched = await client.project.one({ projectId: testProjectId });
     expect(fetched.name).toBe(result.project.name);
 
-    // Update
+    // project.update → ProjectResponse
     const updated = await client.project.update({
       projectId: testProjectId,
       description: "Updated description",
     });
     expect(updated.description).toBe("Updated description");
 
-    // List environments
+    // environment.byProjectId → EnvironmentResponse[]
     const envs = await client.environment.byProjectId({ projectId: testProjectId });
     expect(envs.length).toBeGreaterThanOrEqual(1);
   });
 
   test("compose lifecycle", async () => {
-    // Create compose
+    // compose.create → ComposeResponse
     const compose = await client.compose.create({
       name: `test-compose-${Date.now()}`,
-      projectId: testProjectId,
       environmentId: testEnvironmentId,
     });
     expect(compose.composeId).toBeDefined();
 
-    // Read
+    // compose.one → ComposeResponse
     const fetched = await client.compose.one({ composeId: compose.composeId });
     expect(fetched.name).toBe(compose.name);
 
-    // Update
+    // compose.update → ComposeResponse
     const updated = await client.compose.update({
       composeId: compose.composeId,
       env: "TEST_VAR=hello",
@@ -72,13 +72,11 @@ describe.skipIf(skip)("DokployClient (integration)", () => {
     });
     expect(updated.env).toContain("TEST_VAR=hello");
 
-    // Delete
-    await client.compose.delete({ composeId: compose.composeId });
+    await client.compose.delete({ composeId: compose.composeId, deleteVolumes: false });
 
-    // Verify deleted
     try {
       await client.compose.one({ composeId: compose.composeId });
-      expect(true).toBe(false); // should not reach
+      expect(true).toBe(false);
     } catch (err) {
       expect(err).toBeInstanceOf(DokployApiError);
     }
@@ -96,7 +94,7 @@ describe.skipIf(skip)("DokployClient (integration)", () => {
 });
 
 describe("DokployClient (unit)", () => {
-  test("createDokployClient returns client with routers", () => {
+  test("createDokployClient returns client with all 48 routers", () => {
     const client = createDokployClient({
       endpoint: "http://localhost:3000",
       apiKey: "test-key",
@@ -105,6 +103,12 @@ describe("DokployClient (unit)", () => {
     expect(client.compose).toBeDefined();
     expect(client.domain).toBeDefined();
     expect(client.environment).toBeDefined();
+    expect(client.application).toBeDefined();
+    expect(client.postgres).toBeDefined();
+    expect(client.redis).toBeDefined();
+    expect(client.notification).toBeDefined();
+    expect(client.settings).toBeDefined();
+    expect(client.docker).toBeDefined();
   });
 
   test("DokployApiError has correct properties", () => {

@@ -1,6 +1,7 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as dokploy from "@xantiagoma/dokploy-pulumi";
 import type { ComposeSourceType, CertificateType } from "@xantiagoma/dokploy-api";
+import { envToString } from "./utils.ts";
 
 /**
  * Arguments for the {@link DokployCompose} component.
@@ -8,9 +9,7 @@ import type { ComposeSourceType, CertificateType } from "@xantiagoma/dokploy-api
  * @example
  * ```ts
  * new DokployCompose("server", {
- *   project: "demi",
- *   projectId: "proj_123",
- *   environmentId: "env_456",
+ *   environmentId: project.productionEnvironmentId,
  *   composePath: "./docker-compose-server.yml",
  *   github: { owner: "xantiagoma", repo: "demi-casa" },
  *   env: { NODE_ENV: "production", DATABASE_URL: "${{project.DATABASE_URL}}" },
@@ -20,12 +19,8 @@ import type { ComposeSourceType, CertificateType } from "@xantiagoma/dokploy-api
  * ```
  */
 export interface DokployComposeArgs {
-  /** Project name (for display purposes) */
-  project: pulumi.Input<string>;
-  /** Existing Dokploy project ID */
-  projectId?: pulumi.Input<string>;
-  /** Environment ID (uses project's production env if omitted) */
-  environmentId?: pulumi.Input<string>;
+  /** Environment ID (required — get from DokployProject.productionEnvironmentId) */
+  environmentId: pulumi.Input<string>;
   /** Compose service name (defaults to the Pulumi resource name) */
   composeName?: pulumi.Input<string>;
   /** Service description */
@@ -43,6 +38,12 @@ export interface DokployComposeArgs {
     branch?: pulumi.Input<string>;
     githubId?: pulumi.Input<string>;
   };
+  /** Custom git URL (sets `sourceType` to `"git"`) */
+  customGitUrl?: pulumi.Input<string>;
+  /** Custom git branch (for custom git source) */
+  customGitBranch?: pulumi.Input<string>;
+  /** SSH key ID for custom git auth */
+  customGitSSHKeyId?: pulumi.Input<string>;
   /** Auto-deploy on push to the tracked branch */
   autoDeploy?: pulumi.Input<boolean>;
   /** Domain routing rules to attach to this service */
@@ -65,28 +66,25 @@ export interface DokployComposeDomainArgs {
   certificateType?: pulumi.Input<CertificateType>;
 }
 
-function envToString(
-  env: Record<string, string> | string,
-): string {
-  if (typeof env === "string") return env;
-  return Object.entries(env)
-    .map(([k, v]) => `${k}=${v}`)
-    .join("\n");
+function detectSourceType(args: DokployComposeArgs): ComposeSourceType {
+  if (args.github) return "github";
+  if (args.customGitUrl) return "git";
+  return "raw";
 }
 
 /**
  * High-level component that creates a Dokploy Compose service with optional domains.
  *
- * Wraps {@link dokploy.Compose} and {@link dokploy.Domain} into a single resource.
- * Automatically detects the source type from the provided configuration.
+ * Automatically detects the source type from the provided configuration:
+ * - `github` → `"github"`
+ * - `customGitUrl` → `"git"`
+ * - neither → `"raw"`
  *
  * @example
  * ```ts
  * import { DokployCompose } from "@xantiagoma/dokploy-sst";
  *
  * new DokployCompose("server", {
- *   project: "demi",
- *   projectId: project.projectId,
  *   environmentId: project.productionEnvironmentId,
  *   composePath: "./docker-compose-server.yml",
  *   github: { owner: "xantiagoma", repo: "demi-casa", branch: "main" },
@@ -106,16 +104,10 @@ export class DokployCompose extends pulumi.ComponentResource {
   /** The Dokploy compose service ID */
   public readonly composeId: pulumi.Output<string>;
 
-  constructor(
-    name: string,
-    args: DokployComposeArgs,
-    opts?: pulumi.ComponentResourceOptions,
-  ) {
+  constructor(name: string, args: DokployComposeArgs, opts?: pulumi.ComponentResourceOptions) {
     super("dokploy:index:DokployCompose", name, {}, opts);
 
-    const sourceType: pulumi.Input<ComposeSourceType> = args.github
-      ? "github"
-      : "raw";
+    const sourceType = detectSourceType(args);
 
     const envStr = args.env
       ? pulumi.output(args.env).apply((e) => envToString(e))
@@ -125,7 +117,6 @@ export class DokployCompose extends pulumi.ComponentResource {
       `${name}-compose`,
       {
         name: args.composeName ?? name,
-        projectId: args.projectId ?? "",
         environmentId: args.environmentId,
         description: args.description,
         env: envStr,
@@ -137,6 +128,9 @@ export class DokployCompose extends pulumi.ComponentResource {
         branch: args.github?.branch ?? "main",
         autoDeploy: args.autoDeploy ?? false,
         githubId: args.github?.githubId,
+        customGitUrl: args.customGitUrl,
+        customGitBranch: args.customGitBranch,
+        customGitSSHKeyId: args.customGitSSHKeyId,
       },
       { parent: this },
     );
@@ -154,14 +148,13 @@ export class DokployCompose extends pulumi.ComponentResource {
             https: d.https ?? true,
             path: d.path,
             certificateType: d.certificateType ?? "letsencrypt",
+            domainType: "compose",
             composeId: this.compose.composeId,
           },
           { parent: this, dependsOn: [this.compose] },
         ),
     );
 
-    this.registerOutputs({
-      composeId: this.composeId,
-    });
+    this.registerOutputs({ composeId: this.composeId });
   }
 }

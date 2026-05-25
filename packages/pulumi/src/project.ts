@@ -31,8 +31,7 @@ const projectProvider: pulumi.dynamic.ResourceProvider = {
     try {
       const project = await client.project.one({ projectId: id });
       const envs = await client.environment.byProjectId({ projectId: id });
-      const productionEnv =
-        envs.find((e) => e.name === "Production") ?? envs[0];
+      const productionEnv = envs.find((e) => e.name === "Production") ?? envs[0];
 
       return {
         id,
@@ -49,11 +48,7 @@ const projectProvider: pulumi.dynamic.ResourceProvider = {
     }
   },
 
-  async update(
-    id: string,
-    _olds: ProjectProviderInputs,
-    news: ProjectProviderInputs,
-  ) {
+  async update(id: string, _olds: ProjectProviderInputs, news: ProjectProviderInputs) {
     const client = getClient();
     await client.project.update({
       projectId: id,
@@ -83,11 +78,7 @@ const projectProvider: pulumi.dynamic.ResourceProvider = {
     }
   },
 
-  async diff(
-    _id: string,
-    olds: Record<string, unknown>,
-    news: Record<string, unknown>,
-  ) {
+  async diff(_id: string, olds: Record<string, unknown>, news: Record<string, unknown>) {
     const { changes, replaces } = diffProps(olds, news);
     return { changes, replaces, deleteBeforeReplace: true };
   },
@@ -128,9 +119,7 @@ export interface ProjectArgs {
  *   description: "demi.casa infrastructure",
  * });
  *
- * // Use the auto-created production environment
  * const compose = new dokploy.Compose("server", {
- *   projectId: project.projectId,
  *   environmentId: project.productionEnvironmentId,
  *   name: "server",
  *   // ...
@@ -146,20 +135,7 @@ export class Project extends pulumi.dynamic.Resource {
   public readonly description!: pulumi.Output<string | undefined>;
   public readonly env!: pulumi.Output<string | undefined>;
 
-  constructor(
-    name: string,
-    args: ProjectArgs,
-    opts?: pulumi.CustomResourceOptions,
-  ) {
-    super(
-      projectProvider,
-      name,
-      {
-        projectId: undefined,
-        productionEnvironmentId: undefined,
-        ...args,
-      },
-      opts,
-    );
+  constructor(name: string, args: ProjectArgs, opts?: pulumi.CustomResourceOptions) {
+    super(projectProvider, name, { projectId: undefined, productionEnvironmentId: undefined, ...args }, opts);
   }
 }

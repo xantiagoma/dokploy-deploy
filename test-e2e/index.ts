@@ -7,7 +7,6 @@ const project = new dokploy.Project("e2e-test-project", {
 
 const compose = new dokploy.Compose("e2e-test-compose", {
   name: `e2e-compose-${Date.now()}`,
-  projectId: project.projectId,
   environmentId: project.productionEnvironmentId,
   sourceType: "raw",
   composeFile: `version: "3"

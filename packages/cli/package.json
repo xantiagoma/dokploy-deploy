@@ -1,0 +1,39 @@
+{
+  "name": "@xantiagoma/dokploy",
+  "version": "0.0.0",
+  "description": "CLI for Dokploy — import infrastructure as code, manage resources",
+  "type": "module",
+  "license": "MIT",
+  "author": "Santiago Montoya <xantiagoma@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xantiagoma/dokploy-deploy.git",
+    "directory": "packages/cli"
+  },
+  "keywords": ["dokploy", "cli", "iac", "infrastructure", "import", "pulumi", "sst"],
+  "files": ["dist", "README.md"],
+  "bin": {
+    "dokploy": "./dist/cli.mjs"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/cli.ts",
+      "bun": "./src/cli.ts",
+      "import": "./dist/cli.mjs",
+      "default": "./dist/cli.mjs"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "check-types": "bunx --bun tsc --noEmit"
+  },
+  "dependencies": {
+    "@xantiagoma/dokploy-api": "workspace:*",
+    "citty": "^0.2.2",
+    "ts-morph": "^28.0.0"
+  },
+  "devDependencies": {
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
+  }
+}

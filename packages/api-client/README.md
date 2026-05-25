@@ -2,6 +2,8 @@
 
 Typed HTTP client for the [Dokploy](https://dokploy.com) tRPC API.
 
+Fully codegen'd from the official OpenAPI spec — 526 endpoints across 48 routers. Run `bun run generate` to regenerate from the latest spec.
+
 ## Install
 
 ```bash
@@ -63,10 +65,8 @@ await client.compose.update({
   env: "NODE_ENV=production",
 });
 
-// Deploy
+// Deploy / Stop / Start / Redeploy
 await client.compose.deploy({ composeId: compose.composeId });
-
-// Stop / Start / Redeploy
 await client.compose.stop({ composeId: compose.composeId });
 await client.compose.start({ composeId: compose.composeId });
 await client.compose.redeploy({ composeId: compose.composeId });
@@ -91,10 +91,7 @@ const domains = await client.domain.byComposeId({
 });
 
 // Update domain
-await client.domain.update({
-  domainId: domain.domainId,
-  port: 8080,
-});
+await client.domain.update({ domainId: domain.domainId, port: 8080 });
 ```
 
 ### Environments
@@ -110,6 +107,41 @@ const staging = await client.environment.create({
   name: "staging",
   projectId: project.projectId,
 });
+```
+
+### Databases
+
+```ts
+// Postgres
+const pg = await client.postgres.create({
+  name: "app-db",
+  environmentId: environment.environmentId,
+  databaseName: "appdb",
+  databaseUser: "appuser",
+  databasePassword: "supersecret",
+});
+
+// MySQL / MariaDB / MongoDB / Redis — same pattern
+await client.mysql.create({ ... });
+await client.mariadb.create({ ... });
+await client.mongo.create({ ... });
+await client.redis.create({ ... });
+```
+
+### Backups
+
+```ts
+await client.backup.create({
+  schedule: "0 2 * * *",
+  prefix: "prod-pg",
+  destinationId: destination.destinationId,
+  database: pg.postgresId,
+  databaseType: "postgres",
+  keepLatestCount: 7,
+});
+
+// Trigger a manual backup
+await client.backup.manualBackupPostgres({ backupId: backup.backupId });
 ```
 
 ### Error Handling
@@ -128,14 +160,80 @@ try {
 }
 ```
 
+### `client.raw` — Advanced Usage
+
+The client exposes the underlying `openapi-fetch` instance for endpoints not yet covered by the typed routers:
+
+```ts
+const { data, error } = await client.raw.GET("/api/trpc/some.procedure", {
+  params: { query: { input: JSON.stringify({ json: { id: "..." } }) } },
+});
+```
+
 ## API Coverage
 
-| Router | Methods |
-|--------|---------|
-| `client.project` | `all`, `one`, `create`, `update`, `remove` |
-| `client.environment` | `byProjectId`, `one`, `create`, `update`, `remove` |
-| `client.compose` | `one`, `create`, `update`, `deploy`, `stop`, `start`, `delete`, `redeploy`, `fetchSourceType` |
-| `client.domain` | `one`, `byComposeId`, `byApplicationId`, `create`, `update`, `delete` |
+526 endpoints across 48 routers, grouped by category:
+
+| Category | Routers |
+|----------|---------|
+| **Services** | `application`, `compose`, `domain`, `port`, `mounts`, `redirects`, `security` |
+| **Databases** | `postgres`, `mysql`, `mariadb`, `mongo`, `redis`, `libsql` |
+| **Infrastructure** | `project`, `environment`, `server`, `destination`, `registry`, `sshKey` |
+| **Deployments** | `deployment`, `previewDeployment`, `rollback`, `schedule`, `backup`, `volumeBackups` |
+| **Git Providers** | `github`, `gitlab`, `bitbucket`, `gitea`, `gitProvider` |
+| **Notifications** | `notification` |
+| **Platform** | `admin`, `ai`, `auditLog`, `certificates`, `cluster`, `customRole`, `docker`, `licenseKey`, `organization`, `patch`, `settings`, `sso`, `stripe`, `swarm`, `tag`, `user`, `whitelabeling` |
+
+All routers are accessible as properties on the client (e.g., `client.postgres`, `client.notification`).
+
+## `ResponseMap` Pattern
+
+Common response shapes are defined in `response-map.ts` and wired into the generated routers. The client is fully typed for the most common operations. Unknown operations fall back to `unknown` — cast the result or add an entry to `ResponseMap`.
+
+```ts
+// Fully typed — ResponseMap covers these (no annotation needed)
+const projects = await client.project.all();       // ProjectResponse[]
+const pg = await client.postgres.one({ postgresId: "..." }); // PostgresResponse
+
+// For uncovered operations, use the generic parameter — never `as`
+const result = await client.docker.getConfig<{ containers: number }>();
+```
+
+Coverage of Pulumi-used operations: **96.7% typed** (real interfaces). Only `server-*` operations remain as `unknown`. All other Pulumi provider operations have verified response types.
+
+### Checking coverage
+
+```bash
+bun run coverage           # summary across all 526 operations
+bun run coverage:pulumi    # only operations used by pulumi providers
+bun run coverage:full      # full list of every untyped operation
+```
+
+Coverage output categories:
+- **Typed** — real interface in `ResponseMap` (fully typed)
+- **Unknown** — in `ResponseMap` but mapped to `unknown` (shape not yet verified)
+- **Missing** — not in `ResponseMap` at all (falls back to `unknown`)
+
+### void/true create responses
+
+Some endpoints **don't return the created resource**. These are documented in `ResponseMap`:
+
+| Operation | Returns |
+|-----------|---------|
+| `sshKey.create` | `void` |
+| `redirects.create` | `true` |
+| `security.create` | `true` |
+| `schedule.delete` | `true` |
+| `tag.remove` | `{ success: true }` |
+| `volumeBackups.delete` | `void` |
+
+When using these operations programmatically, fetch the resource by a secondary lookup (list + filter by name, or read the parent resource).
+
+## Regenerating
+
+```bash
+bun run generate  # fetches latest OpenAPI spec and regenerates generated.ts + generated-routers.ts
+```
 
 ## License
 
