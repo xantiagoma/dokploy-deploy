@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.2
+
+[compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.1...v0.0.2)
+
+### 🩹 Fixes
+
+- Replace workspace:* with actual version before npm publish ([ffb34f8](https://github.com/xantiagoma/dokploy-deploy/commit/ffb34f8))
+
+### ❤️ Contributors
+
+- Santiago Montoya ([@xantiagoma](https://github.com/xantiagoma))
+
 ## v0.0.1
 
 
