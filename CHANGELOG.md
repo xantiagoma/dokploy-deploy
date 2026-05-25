@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.3
+
+[compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.2...v0.0.3)
+
+### 🩹 Fixes
+
+- Custom release script that syncs workspace versions before commit ([b27c82c](https://github.com/xantiagoma/dokploy-deploy/commit/b27c82c))
+
+### ❤️ Contributors
+
+- Santiago Montoya ([@xantiagoma](https://github.com/xantiagoma))
+
 ## v0.0.2
 
 [compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.1...v0.0.2)

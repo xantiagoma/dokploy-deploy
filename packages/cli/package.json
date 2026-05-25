@@ -1,6 +1,6 @@
 {
   "name": "@xantiagoma/dokploy",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "CLI for Dokploy — import infrastructure as code, manage resources",
   "type": "module",
   "license": "MIT",
