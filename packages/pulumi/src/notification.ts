@@ -149,11 +149,11 @@ export interface SlackNotificationArgs extends NotificationEventFlags {
  * ```
  */
 export class SlackNotification extends pulumi.dynamic.Resource {
-  public readonly notificationId!: pulumi.Output<string>;
-  public readonly slackId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly webhookUrl!: pulumi.Output<string>;
-  public readonly channel!: pulumi.Output<string>;
+  declare public readonly notificationId: pulumi.Output<string>;
+  declare public readonly slackId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly webhookUrl: pulumi.Output<string>;
+  declare public readonly channel: pulumi.Output<string>;
 
   constructor(name: string, args: SlackNotificationArgs, opts?: pulumi.CustomResourceOptions) {
     super(slackProvider, name, { notificationId: undefined, slackId: undefined, ...args }, opts);
@@ -297,12 +297,12 @@ export interface TelegramNotificationArgs extends NotificationEventFlags {
  * ```
  */
 export class TelegramNotification extends pulumi.dynamic.Resource {
-  public readonly notificationId!: pulumi.Output<string>;
-  public readonly telegramId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly botToken!: pulumi.Output<string>;
-  public readonly chatId!: pulumi.Output<string>;
-  public readonly messageThreadId!: pulumi.Output<string>;
+  declare public readonly notificationId: pulumi.Output<string>;
+  declare public readonly telegramId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly botToken: pulumi.Output<string>;
+  declare public readonly chatId: pulumi.Output<string>;
+  declare public readonly messageThreadId: pulumi.Output<string>;
 
   constructor(name: string, args: TelegramNotificationArgs, opts?: pulumi.CustomResourceOptions) {
     super(telegramProvider, name, { notificationId: undefined, telegramId: undefined, ...args }, opts);
@@ -439,11 +439,11 @@ export interface DiscordNotificationArgs extends NotificationEventFlags {
  * ```
  */
 export class DiscordNotification extends pulumi.dynamic.Resource {
-  public readonly notificationId!: pulumi.Output<string>;
-  public readonly discordId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly webhookUrl!: pulumi.Output<string>;
-  public readonly decoration!: pulumi.Output<boolean>;
+  declare public readonly notificationId: pulumi.Output<string>;
+  declare public readonly discordId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly webhookUrl: pulumi.Output<string>;
+  declare public readonly decoration: pulumi.Output<boolean>;
 
   constructor(name: string, args: DiscordNotificationArgs, opts?: pulumi.CustomResourceOptions) {
     super(discordProvider, name, { notificationId: undefined, discordId: undefined, ...args }, opts);
@@ -608,13 +608,13 @@ export interface EmailNotificationArgs extends NotificationEventFlags {
  * ```
  */
 export class EmailNotification extends pulumi.dynamic.Resource {
-  public readonly notificationId!: pulumi.Output<string>;
-  public readonly emailId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly smtpServer!: pulumi.Output<string>;
-  public readonly smtpPort!: pulumi.Output<number>;
-  public readonly fromAddress!: pulumi.Output<string>;
-  public readonly toAddresses!: pulumi.Output<string[]>;
+  declare public readonly notificationId: pulumi.Output<string>;
+  declare public readonly emailId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly smtpServer: pulumi.Output<string>;
+  declare public readonly smtpPort: pulumi.Output<number>;
+  declare public readonly fromAddress: pulumi.Output<string>;
+  declare public readonly toAddresses: pulumi.Output<string[]>;
 
   constructor(name: string, args: EmailNotificationArgs, opts?: pulumi.CustomResourceOptions) {
     super(emailProvider, name, { notificationId: undefined, emailId: undefined, ...args }, opts);
@@ -761,13 +761,13 @@ export interface GotifyNotificationArgs extends NotificationEventFlagsBase {
  * ```
  */
 export class GotifyNotification extends pulumi.dynamic.Resource {
-  public readonly notificationId!: pulumi.Output<string>;
-  public readonly gotifyId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly serverUrl!: pulumi.Output<string>;
-  public readonly appToken!: pulumi.Output<string>;
-  public readonly priority!: pulumi.Output<number>;
-  public readonly decoration!: pulumi.Output<boolean>;
+  declare public readonly notificationId: pulumi.Output<string>;
+  declare public readonly gotifyId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly serverUrl: pulumi.Output<string>;
+  declare public readonly appToken: pulumi.Output<string>;
+  declare public readonly priority: pulumi.Output<number>;
+  declare public readonly decoration: pulumi.Output<boolean>;
 
   constructor(name: string, args: GotifyNotificationArgs, opts?: pulumi.CustomResourceOptions) {
     super(gotifyProvider, name, { notificationId: undefined, gotifyId: undefined, ...args }, opts);
@@ -914,13 +914,13 @@ export interface NtfyNotificationArgs extends NotificationEventFlagsBase {
  * ```
  */
 export class NtfyNotification extends pulumi.dynamic.Resource {
-  public readonly notificationId!: pulumi.Output<string>;
-  public readonly ntfyId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly serverUrl!: pulumi.Output<string>;
-  public readonly topic!: pulumi.Output<string>;
-  public readonly accessToken!: pulumi.Output<string>;
-  public readonly priority!: pulumi.Output<number>;
+  declare public readonly notificationId: pulumi.Output<string>;
+  declare public readonly ntfyId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly serverUrl: pulumi.Output<string>;
+  declare public readonly topic: pulumi.Output<string>;
+  declare public readonly accessToken: pulumi.Output<string>;
+  declare public readonly priority: pulumi.Output<number>;
 
   constructor(name: string, args: NtfyNotificationArgs, opts?: pulumi.CustomResourceOptions) {
     super(ntfyProvider, name, { notificationId: undefined, ntfyId: undefined, ...args }, opts);
@@ -1064,12 +1064,12 @@ export interface MattermostNotificationArgs extends NotificationEventFlags {
  * ```
  */
 export class MattermostNotification extends pulumi.dynamic.Resource {
-  public readonly notificationId!: pulumi.Output<string>;
-  public readonly mattermostId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly webhookUrl!: pulumi.Output<string>;
-  public readonly channel!: pulumi.Output<string>;
-  public readonly username!: pulumi.Output<string>;
+  declare public readonly notificationId: pulumi.Output<string>;
+  declare public readonly mattermostId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly webhookUrl: pulumi.Output<string>;
+  declare public readonly channel: pulumi.Output<string>;
+  declare public readonly username: pulumi.Output<string>;
 
   constructor(name: string, args: MattermostNotificationArgs, opts?: pulumi.CustomResourceOptions) {
     super(mattermostProvider, name, { notificationId: undefined, mattermostId: undefined, ...args }, opts);
@@ -1206,11 +1206,11 @@ export interface CustomNotificationArgs extends NotificationEventFlags {
  * ```
  */
 export class CustomNotification extends pulumi.dynamic.Resource {
-  public readonly notificationId!: pulumi.Output<string>;
-  public readonly customId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly endpoint!: pulumi.Output<string>;
-  public readonly headers!: pulumi.Output<Record<string, string>>;
+  declare public readonly notificationId: pulumi.Output<string>;
+  declare public readonly customId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly endpoint: pulumi.Output<string>;
+  declare public readonly headers: pulumi.Output<Record<string, string>>;
 
   constructor(name: string, args: CustomNotificationArgs, opts?: pulumi.CustomResourceOptions) {
     super(customProvider, name, { notificationId: undefined, customId: undefined, headers: {}, ...args }, opts);
@@ -1340,10 +1340,10 @@ export interface LarkNotificationArgs extends NotificationEventFlags {
  * ```
  */
 export class LarkNotification extends pulumi.dynamic.Resource {
-  public readonly notificationId!: pulumi.Output<string>;
-  public readonly larkId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly webhookUrl!: pulumi.Output<string>;
+  declare public readonly notificationId: pulumi.Output<string>;
+  declare public readonly larkId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly webhookUrl: pulumi.Output<string>;
 
   constructor(name: string, args: LarkNotificationArgs, opts?: pulumi.CustomResourceOptions) {
     super(larkProvider, name, { notificationId: undefined, larkId: undefined, ...args }, opts);
@@ -1473,10 +1473,10 @@ export interface TeamsNotificationArgs extends NotificationEventFlags {
  * ```
  */
 export class TeamsNotification extends pulumi.dynamic.Resource {
-  public readonly notificationId!: pulumi.Output<string>;
-  public readonly teamsId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly webhookUrl!: pulumi.Output<string>;
+  declare public readonly notificationId: pulumi.Output<string>;
+  declare public readonly teamsId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly webhookUrl: pulumi.Output<string>;
 
   constructor(name: string, args: TeamsNotificationArgs, opts?: pulumi.CustomResourceOptions) {
     super(teamsProvider, name, { notificationId: undefined, teamsId: undefined, ...args }, opts);
@@ -1632,14 +1632,14 @@ export interface PushoverNotificationArgs extends NotificationEventFlags {
  * ```
  */
 export class PushoverNotification extends pulumi.dynamic.Resource {
-  public readonly notificationId!: pulumi.Output<string>;
-  public readonly pushoverId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly userKey!: pulumi.Output<string>;
-  public readonly apiToken!: pulumi.Output<string>;
-  public readonly priority!: pulumi.Output<number>;
-  public readonly retry!: pulumi.Output<number | null>;
-  public readonly expire!: pulumi.Output<number | null>;
+  declare public readonly notificationId: pulumi.Output<string>;
+  declare public readonly pushoverId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly userKey: pulumi.Output<string>;
+  declare public readonly apiToken: pulumi.Output<string>;
+  declare public readonly priority: pulumi.Output<number>;
+  declare public readonly retry: pulumi.Output<number | null>;
+  declare public readonly expire: pulumi.Output<number | null>;
 
   constructor(name: string, args: PushoverNotificationArgs, opts?: pulumi.CustomResourceOptions) {
     super(pushoverProvider, name, {
@@ -1790,12 +1790,12 @@ export interface ResendNotificationArgs extends NotificationEventFlags {
  * ```
  */
 export class ResendNotification extends pulumi.dynamic.Resource {
-  public readonly notificationId!: pulumi.Output<string>;
-  public readonly resendId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly apiKey!: pulumi.Output<string>;
-  public readonly fromAddress!: pulumi.Output<string>;
-  public readonly toAddresses!: pulumi.Output<string[]>;
+  declare public readonly notificationId: pulumi.Output<string>;
+  declare public readonly resendId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly apiKey: pulumi.Output<string>;
+  declare public readonly fromAddress: pulumi.Output<string>;
+  declare public readonly toAddresses: pulumi.Output<string[]>;
 
   constructor(name: string, args: ResendNotificationArgs, opts?: pulumi.CustomResourceOptions) {
     super(resendProvider, name, { notificationId: undefined, resendId: undefined, ...args }, opts);

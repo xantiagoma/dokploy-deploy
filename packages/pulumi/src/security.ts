@@ -115,9 +115,9 @@ export interface SecurityArgs {
  */
 export class Security extends pulumi.dynamic.Resource {
   /** The Dokploy security rule ID */
-  public readonly securityId!: pulumi.Output<string>;
-  public readonly applicationId!: pulumi.Output<string>;
-  public readonly username!: pulumi.Output<string>;
+  declare public readonly securityId: pulumi.Output<string>;
+  declare public readonly applicationId: pulumi.Output<string>;
+  declare public readonly username: pulumi.Output<string>;
 
   constructor(name: string, args: SecurityArgs, opts?: pulumi.CustomResourceOptions) {
     super(securityProvider, name, { securityId: undefined, ...args }, opts);

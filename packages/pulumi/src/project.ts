@@ -153,12 +153,12 @@ export interface ProjectArgs {
  */
 export class Project extends pulumi.dynamic.Resource {
   /** The Dokploy project ID */
-  public readonly projectId!: pulumi.Output<string>;
+  declare public readonly projectId: pulumi.Output<string>;
   /** The auto-created production environment ID */
-  public readonly productionEnvironmentId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly description!: pulumi.Output<string | undefined>;
-  public readonly env!: pulumi.Output<string | undefined>;
+  declare public readonly productionEnvironmentId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly description: pulumi.Output<string | undefined>;
+  declare public readonly env: pulumi.Output<string | undefined>;
 
   constructor(name: string, args: ProjectArgs, opts?: pulumi.CustomResourceOptions) {
     super(projectProvider, name, { projectId: undefined, productionEnvironmentId: undefined, ...args }, opts);

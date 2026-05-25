@@ -114,10 +114,10 @@ export interface EnvironmentArgs {
  */
 export class Environment extends pulumi.dynamic.Resource {
   /** The Dokploy environment ID */
-  public readonly environmentId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly projectId!: pulumi.Output<string>;
-  public readonly description!: pulumi.Output<string | undefined>;
+  declare public readonly environmentId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly projectId: pulumi.Output<string>;
+  declare public readonly description: pulumi.Output<string | undefined>;
 
   constructor(name: string, args: EnvironmentArgs, opts?: pulumi.CustomResourceOptions) {
     super(environmentProvider, name, { environmentId: undefined, ...args }, opts);

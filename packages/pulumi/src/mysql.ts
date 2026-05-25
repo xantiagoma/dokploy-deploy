@@ -170,19 +170,19 @@ export interface MysqlArgs {
  */
 export class Mysql extends pulumi.dynamic.Resource {
   /** The Dokploy MySQL service ID */
-  public readonly mysqlId!: pulumi.Output<string>;
+  declare public readonly mysqlId: pulumi.Output<string>;
   /** Docker internal hostname for this service */
-  public readonly appName!: pulumi.Output<string>;
+  declare public readonly appName: pulumi.Output<string>;
   /** External port exposed to the internet (null if not enabled) */
-  public readonly externalPort!: pulumi.Output<number | undefined>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly environmentId!: pulumi.Output<string>;
-  public readonly databaseName!: pulumi.Output<string>;
-  public readonly databaseUser!: pulumi.Output<string>;
-  public readonly databasePassword!: pulumi.Output<string>;
-  public readonly description!: pulumi.Output<string | undefined>;
-  public readonly dockerImage!: pulumi.Output<string | undefined>;
-  public readonly databaseRootPassword!: pulumi.Output<string | undefined>;
+  declare public readonly externalPort: pulumi.Output<number | undefined>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly environmentId: pulumi.Output<string>;
+  declare public readonly databaseName: pulumi.Output<string>;
+  declare public readonly databaseUser: pulumi.Output<string>;
+  declare public readonly databasePassword: pulumi.Output<string>;
+  declare public readonly description: pulumi.Output<string | undefined>;
+  declare public readonly dockerImage: pulumi.Output<string | undefined>;
+  declare public readonly databaseRootPassword: pulumi.Output<string | undefined>;
 
   constructor(name: string, args: MysqlArgs, opts?: pulumi.CustomResourceOptions) {
     super(mysqlProvider, name, { mysqlId: undefined, appName: undefined, externalPort: undefined, ...args }, opts);

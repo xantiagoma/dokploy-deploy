@@ -154,15 +154,15 @@ export interface BackupArgs {
  */
 export class Backup extends pulumi.dynamic.Resource {
   /** The Dokploy backup ID */
-  public readonly backupId!: pulumi.Output<string>;
-  public readonly schedule!: pulumi.Output<string>;
-  public readonly prefix!: pulumi.Output<string>;
-  public readonly destinationId!: pulumi.Output<string>;
-  public readonly database!: pulumi.Output<string>;
-  public readonly databaseType!: pulumi.Output<DatabaseType>;
-  public readonly enabled!: pulumi.Output<boolean | null | undefined>;
-  public readonly keepLatestCount!: pulumi.Output<number | null | undefined>;
-  public readonly serviceName!: pulumi.Output<string | null | undefined>;
+  declare public readonly backupId: pulumi.Output<string>;
+  declare public readonly schedule: pulumi.Output<string>;
+  declare public readonly prefix: pulumi.Output<string>;
+  declare public readonly destinationId: pulumi.Output<string>;
+  declare public readonly database: pulumi.Output<string>;
+  declare public readonly databaseType: pulumi.Output<DatabaseType>;
+  declare public readonly enabled: pulumi.Output<boolean | null | undefined>;
+  declare public readonly keepLatestCount: pulumi.Output<number | null | undefined>;
+  declare public readonly serviceName: pulumi.Output<string | null | undefined>;
 
   constructor(name: string, args: BackupArgs, opts?: pulumi.CustomResourceOptions) {
     super(backupProvider, name, { backupId: undefined, ...args }, opts);

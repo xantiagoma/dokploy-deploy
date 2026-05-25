@@ -219,26 +219,26 @@ export interface VolumeBackupArgs {
  */
 export class VolumeBackup extends pulumi.dynamic.Resource {
   /** The Dokploy volume backup configuration ID */
-  public readonly volumeBackupId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly volumeName!: pulumi.Output<string>;
-  public readonly prefix!: pulumi.Output<string>;
-  public readonly cronExpression!: pulumi.Output<string>;
-  public readonly destinationId!: pulumi.Output<string>;
-  public readonly serviceType!: pulumi.Output<VolumeBackupServiceType | undefined>;
-  public readonly appName!: pulumi.Output<string | undefined>;
-  public readonly serviceName!: pulumi.Output<string | undefined>;
-  public readonly turnOff!: pulumi.Output<boolean | undefined>;
-  public readonly keepLatestCount!: pulumi.Output<number | undefined>;
-  public readonly enabled!: pulumi.Output<boolean | undefined>;
-  public readonly applicationId!: pulumi.Output<string | undefined>;
-  public readonly postgresId!: pulumi.Output<string | undefined>;
-  public readonly mariadbId!: pulumi.Output<string | undefined>;
-  public readonly mongoId!: pulumi.Output<string | undefined>;
-  public readonly mysqlId!: pulumi.Output<string | undefined>;
-  public readonly redisId!: pulumi.Output<string | undefined>;
-  public readonly libsqlId!: pulumi.Output<string | undefined>;
-  public readonly composeId!: pulumi.Output<string | undefined>;
+  declare public readonly volumeBackupId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly volumeName: pulumi.Output<string>;
+  declare public readonly prefix: pulumi.Output<string>;
+  declare public readonly cronExpression: pulumi.Output<string>;
+  declare public readonly destinationId: pulumi.Output<string>;
+  declare public readonly serviceType: pulumi.Output<VolumeBackupServiceType | undefined>;
+  declare public readonly appName: pulumi.Output<string | undefined>;
+  declare public readonly serviceName: pulumi.Output<string | undefined>;
+  declare public readonly turnOff: pulumi.Output<boolean | undefined>;
+  declare public readonly keepLatestCount: pulumi.Output<number | undefined>;
+  declare public readonly enabled: pulumi.Output<boolean | undefined>;
+  declare public readonly applicationId: pulumi.Output<string | undefined>;
+  declare public readonly postgresId: pulumi.Output<string | undefined>;
+  declare public readonly mariadbId: pulumi.Output<string | undefined>;
+  declare public readonly mongoId: pulumi.Output<string | undefined>;
+  declare public readonly mysqlId: pulumi.Output<string | undefined>;
+  declare public readonly redisId: pulumi.Output<string | undefined>;
+  declare public readonly libsqlId: pulumi.Output<string | undefined>;
+  declare public readonly composeId: pulumi.Output<string | undefined>;
 
   constructor(name: string, args: VolumeBackupArgs, opts?: pulumi.CustomResourceOptions) {
     super(volumeBackupProvider, name, { volumeBackupId: undefined, ...args }, opts);

@@ -177,18 +177,18 @@ export interface LibsqlArgs {
  */
 export class Libsql extends pulumi.dynamic.Resource {
   /** The Dokploy LibSQL service ID */
-  public readonly libsqlId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly appName!: pulumi.Output<string>;
-  public readonly dockerImage!: pulumi.Output<string>;
-  public readonly environmentId!: pulumi.Output<string>;
-  public readonly description!: pulumi.Output<string>;
-  public readonly databaseUser!: pulumi.Output<string>;
-  public readonly databasePassword!: pulumi.Output<string>;
-  public readonly sqldNode!: pulumi.Output<SqldNodeType>;
-  public readonly sqldPrimaryUrl!: pulumi.Output<string>;
-  public readonly enableNamespaces!: pulumi.Output<boolean>;
-  public readonly serverId!: pulumi.Output<string>;
+  declare public readonly libsqlId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly appName: pulumi.Output<string>;
+  declare public readonly dockerImage: pulumi.Output<string>;
+  declare public readonly environmentId: pulumi.Output<string>;
+  declare public readonly description: pulumi.Output<string>;
+  declare public readonly databaseUser: pulumi.Output<string>;
+  declare public readonly databasePassword: pulumi.Output<string>;
+  declare public readonly sqldNode: pulumi.Output<SqldNodeType>;
+  declare public readonly sqldPrimaryUrl: pulumi.Output<string>;
+  declare public readonly enableNamespaces: pulumi.Output<boolean>;
+  declare public readonly serverId: pulumi.Output<string>;
 
   constructor(name: string, args: LibsqlArgs, opts?: pulumi.CustomResourceOptions) {
     super(libsqlProvider, name, { libsqlId: undefined, ...args }, opts);

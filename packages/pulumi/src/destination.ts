@@ -151,14 +151,14 @@ export interface DestinationArgs {
  */
 export class Destination extends pulumi.dynamic.Resource {
   /** The Dokploy destination ID */
-  public readonly destinationId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly provider!: pulumi.Output<string>;
-  public readonly accessKey!: pulumi.Output<string>;
-  public readonly bucket!: pulumi.Output<string>;
-  public readonly region!: pulumi.Output<string>;
-  public readonly endpoint!: pulumi.Output<string>;
-  public readonly additionalFlags!: pulumi.Output<string[]>;
+  declare public readonly destinationId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly provider: pulumi.Output<string>;
+  declare public readonly accessKey: pulumi.Output<string>;
+  declare public readonly bucket: pulumi.Output<string>;
+  declare public readonly region: pulumi.Output<string>;
+  declare public readonly endpoint: pulumi.Output<string>;
+  declare public readonly additionalFlags: pulumi.Output<string[]>;
 
   constructor(name: string, args: DestinationArgs, opts?: pulumi.CustomResourceOptions) {
     super(destinationProvider, name, { destinationId: undefined, ...args }, opts);

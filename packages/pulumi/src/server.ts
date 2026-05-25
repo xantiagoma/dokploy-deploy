@@ -144,14 +144,14 @@ export interface ServerArgs {
  */
 export class Server extends pulumi.dynamic.Resource {
   /** The Dokploy server ID */
-  public readonly serverId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly description!: pulumi.Output<string>;
-  public readonly ipAddress!: pulumi.Output<string>;
-  public readonly port!: pulumi.Output<number>;
-  public readonly username!: pulumi.Output<string>;
-  public readonly sshKeyId!: pulumi.Output<string>;
-  public readonly serverType!: pulumi.Output<ServerType>;
+  declare public readonly serverId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly description: pulumi.Output<string>;
+  declare public readonly ipAddress: pulumi.Output<string>;
+  declare public readonly port: pulumi.Output<number>;
+  declare public readonly username: pulumi.Output<string>;
+  declare public readonly sshKeyId: pulumi.Output<string>;
+  declare public readonly serverType: pulumi.Output<ServerType>;
 
   constructor(name: string, args: ServerArgs, opts?: pulumi.CustomResourceOptions) {
     super(serverProvider, name, { serverId: undefined, ...args }, opts);

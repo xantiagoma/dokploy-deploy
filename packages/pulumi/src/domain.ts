@@ -178,16 +178,16 @@ export interface DomainArgs {
  */
 export class Domain extends pulumi.dynamic.Resource {
   /** The Dokploy domain ID */
-  public readonly domainId!: pulumi.Output<string>;
-  public readonly host!: pulumi.Output<string>;
-  public readonly path!: pulumi.Output<string | undefined>;
-  public readonly port!: pulumi.Output<number | undefined>;
-  public readonly https!: pulumi.Output<boolean | undefined>;
-  public readonly certificateType!: pulumi.Output<CertificateType | undefined>;
-  public readonly serviceName!: pulumi.Output<string | undefined>;
-  public readonly domainType!: pulumi.Output<DomainType | undefined>;
-  public readonly applicationId!: pulumi.Output<string | undefined>;
-  public readonly composeId!: pulumi.Output<string | undefined>;
+  declare public readonly domainId: pulumi.Output<string>;
+  declare public readonly host: pulumi.Output<string>;
+  declare public readonly path: pulumi.Output<string | undefined>;
+  declare public readonly port: pulumi.Output<number | undefined>;
+  declare public readonly https: pulumi.Output<boolean | undefined>;
+  declare public readonly certificateType: pulumi.Output<CertificateType | undefined>;
+  declare public readonly serviceName: pulumi.Output<string | undefined>;
+  declare public readonly domainType: pulumi.Output<DomainType | undefined>;
+  declare public readonly applicationId: pulumi.Output<string | undefined>;
+  declare public readonly composeId: pulumi.Output<string | undefined>;
 
   constructor(name: string, args: DomainArgs, opts?: pulumi.CustomResourceOptions) {
     super(domainProvider, name, { domainId: undefined, ...args }, opts);

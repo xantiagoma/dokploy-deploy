@@ -147,12 +147,12 @@ export interface ApplicationArgs {
  */
 export class Application extends pulumi.dynamic.Resource {
   /** The Dokploy application ID */
-  public readonly applicationId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly environmentId!: pulumi.Output<string>;
-  public readonly description!: pulumi.Output<string | undefined>;
-  public readonly appName!: pulumi.Output<string | undefined>;
-  public readonly serverId!: pulumi.Output<string | undefined>;
+  declare public readonly applicationId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly environmentId: pulumi.Output<string>;
+  declare public readonly description: pulumi.Output<string | undefined>;
+  declare public readonly appName: pulumi.Output<string | undefined>;
+  declare public readonly serverId: pulumi.Output<string | undefined>;
 
   constructor(name: string, args: ApplicationArgs, opts?: pulumi.CustomResourceOptions) {
     super(applicationProvider, name, { applicationId: undefined, ...args }, opts);

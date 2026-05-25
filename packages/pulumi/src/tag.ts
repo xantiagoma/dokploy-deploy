@@ -101,9 +101,9 @@ export interface TagArgs {
  */
 export class Tag extends pulumi.dynamic.Resource {
   /** The Dokploy tag ID */
-  public readonly tagId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly color!: pulumi.Output<string | undefined>;
+  declare public readonly tagId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly color: pulumi.Output<string | undefined>;
 
   constructor(name: string, args: TagArgs, opts?: pulumi.CustomResourceOptions) {
     super(tagProvider, name, { tagId: undefined, ...args }, opts);

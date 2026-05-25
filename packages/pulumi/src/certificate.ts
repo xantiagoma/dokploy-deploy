@@ -134,12 +134,12 @@ export interface CertificateArgs {
  */
 export class Certificate extends pulumi.dynamic.Resource {
   /** The Dokploy certificate ID */
-  public readonly certificateId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly organizationId!: pulumi.Output<string>;
-  public readonly certificatePath!: pulumi.Output<string | undefined>;
-  public readonly autoRenew!: pulumi.Output<boolean | undefined>;
-  public readonly serverId!: pulumi.Output<string | undefined>;
+  declare public readonly certificateId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly organizationId: pulumi.Output<string>;
+  declare public readonly certificatePath: pulumi.Output<string | undefined>;
+  declare public readonly autoRenew: pulumi.Output<boolean | undefined>;
+  declare public readonly serverId: pulumi.Output<string | undefined>;
 
   constructor(name: string, args: CertificateArgs, opts?: pulumi.CustomResourceOptions) {
     super(certificateProvider, name, { certificateId: undefined, ...args }, opts);

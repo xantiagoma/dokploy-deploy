@@ -146,15 +146,15 @@ export interface ScheduleArgs {
  */
 export class Schedule extends pulumi.dynamic.Resource {
   /** The Dokploy schedule ID */
-  public readonly scheduleId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly cronExpression!: pulumi.Output<string>;
-  public readonly command!: pulumi.Output<string>;
-  public readonly applicationId!: pulumi.Output<string | null | undefined>;
-  public readonly composeId!: pulumi.Output<string | null | undefined>;
-  public readonly serverId!: pulumi.Output<string | null | undefined>;
-  public readonly scheduleType!: pulumi.Output<ScheduleType | undefined>;
-  public readonly enabled!: pulumi.Output<boolean | undefined>;
+  declare public readonly scheduleId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly cronExpression: pulumi.Output<string>;
+  declare public readonly command: pulumi.Output<string>;
+  declare public readonly applicationId: pulumi.Output<string | null | undefined>;
+  declare public readonly composeId: pulumi.Output<string | null | undefined>;
+  declare public readonly serverId: pulumi.Output<string | null | undefined>;
+  declare public readonly scheduleType: pulumi.Output<ScheduleType | undefined>;
+  declare public readonly enabled: pulumi.Output<boolean | undefined>;
 
   constructor(name: string, args: ScheduleArgs, opts?: pulumi.CustomResourceOptions) {
     super(scheduleProvider, name, { scheduleId: undefined, ...args }, opts);

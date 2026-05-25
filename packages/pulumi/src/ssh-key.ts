@@ -138,11 +138,11 @@ export interface SshKeyArgs {
  */
 export class SshKey extends pulumi.dynamic.Resource {
   /** The Dokploy SSH key ID */
-  public readonly sshKeyId!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly publicKey!: pulumi.Output<string>;
-  public readonly organizationId!: pulumi.Output<string>;
-  public readonly description!: pulumi.Output<string | undefined>;
+  declare public readonly sshKeyId: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly publicKey: pulumi.Output<string>;
+  declare public readonly organizationId: pulumi.Output<string>;
+  declare public readonly description: pulumi.Output<string | undefined>;
 
   constructor(name: string, args: SshKeyArgs, opts?: pulumi.CustomResourceOptions) {
     super(sshKeyProvider, name, { sshKeyId: undefined, ...args }, opts);

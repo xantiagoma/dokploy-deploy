@@ -122,11 +122,11 @@ export interface RedirectArgs {
  */
 export class Redirect extends pulumi.dynamic.Resource {
   /** The Dokploy redirect rule ID */
-  public readonly redirectId!: pulumi.Output<string>;
-  public readonly regex!: pulumi.Output<string>;
-  public readonly replacement!: pulumi.Output<string>;
-  public readonly permanent!: pulumi.Output<boolean>;
-  public readonly applicationId!: pulumi.Output<string>;
+  declare public readonly redirectId: pulumi.Output<string>;
+  declare public readonly regex: pulumi.Output<string>;
+  declare public readonly replacement: pulumi.Output<string>;
+  declare public readonly permanent: pulumi.Output<boolean>;
+  declare public readonly applicationId: pulumi.Output<string>;
 
   constructor(name: string, args: RedirectArgs, opts?: pulumi.CustomResourceOptions) {
     super(redirectProvider, name, { redirectId: undefined, ...args }, opts);

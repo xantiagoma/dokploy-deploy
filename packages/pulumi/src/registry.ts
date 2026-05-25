@@ -134,12 +134,12 @@ export interface RegistryArgs {
  */
 export class Registry extends pulumi.dynamic.Resource {
   /** The Dokploy registry ID */
-  public readonly registryId!: pulumi.Output<string>;
-  public readonly registryName!: pulumi.Output<string>;
-  public readonly username!: pulumi.Output<string>;
-  public readonly registryUrl!: pulumi.Output<string>;
-  public readonly registryType!: pulumi.Output<"cloud">;
-  public readonly imagePrefix!: pulumi.Output<string>;
+  declare public readonly registryId: pulumi.Output<string>;
+  declare public readonly registryName: pulumi.Output<string>;
+  declare public readonly username: pulumi.Output<string>;
+  declare public readonly registryUrl: pulumi.Output<string>;
+  declare public readonly registryType: pulumi.Output<"cloud">;
+  declare public readonly imagePrefix: pulumi.Output<string>;
 
   constructor(name: string, args: RegistryArgs, opts?: pulumi.CustomResourceOptions) {
     super(registryProvider, name, { registryId: undefined, ...args }, opts);

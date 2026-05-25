@@ -127,12 +127,12 @@ export interface PortArgs {
  */
 export class Port extends pulumi.dynamic.Resource {
   /** The Dokploy port ID */
-  public readonly portId!: pulumi.Output<string>;
-  public readonly publishedPort!: pulumi.Output<number>;
-  public readonly publishMode!: pulumi.Output<PublishMode>;
-  public readonly targetPort!: pulumi.Output<number>;
-  public readonly protocol!: pulumi.Output<Protocol>;
-  public readonly applicationId!: pulumi.Output<string>;
+  declare public readonly portId: pulumi.Output<string>;
+  declare public readonly publishedPort: pulumi.Output<number>;
+  declare public readonly publishMode: pulumi.Output<PublishMode>;
+  declare public readonly targetPort: pulumi.Output<number>;
+  declare public readonly protocol: pulumi.Output<Protocol>;
+  declare public readonly applicationId: pulumi.Output<string>;
 
   constructor(name: string, args: PortArgs, opts?: pulumi.CustomResourceOptions) {
     super(portProvider, name, { portId: undefined, ...args }, opts);

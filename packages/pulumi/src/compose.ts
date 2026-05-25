@@ -205,21 +205,21 @@ export interface ComposeArgs {
  */
 export class Compose extends pulumi.dynamic.Resource {
   /** The Dokploy compose service ID */
-  public readonly composeId!: pulumi.Output<string>;
+  declare public readonly composeId: pulumi.Output<string>;
   /** Docker internal hostname for this service */
-  public readonly appName!: pulumi.Output<string>;
-  public readonly name!: pulumi.Output<string>;
-  public readonly environmentId!: pulumi.Output<string>;
-  public readonly description!: pulumi.Output<string | undefined>;
-  public readonly env!: pulumi.Output<string | undefined>;
-  public readonly composeFile!: pulumi.Output<string | undefined>;
-  public readonly composePath!: pulumi.Output<string | undefined>;
-  public readonly sourceType!: pulumi.Output<ComposeSourceType | undefined>;
-  public readonly repository!: pulumi.Output<string | undefined>;
-  public readonly owner!: pulumi.Output<string | undefined>;
-  public readonly branch!: pulumi.Output<string | undefined>;
-  public readonly autoDeploy!: pulumi.Output<boolean | undefined>;
-  public readonly githubId!: pulumi.Output<string | undefined>;
+  declare public readonly appName: pulumi.Output<string>;
+  declare public readonly name: pulumi.Output<string>;
+  declare public readonly environmentId: pulumi.Output<string>;
+  declare public readonly description: pulumi.Output<string | undefined>;
+  declare public readonly env: pulumi.Output<string | undefined>;
+  declare public readonly composeFile: pulumi.Output<string | undefined>;
+  declare public readonly composePath: pulumi.Output<string | undefined>;
+  declare public readonly sourceType: pulumi.Output<ComposeSourceType | undefined>;
+  declare public readonly repository: pulumi.Output<string | undefined>;
+  declare public readonly owner: pulumi.Output<string | undefined>;
+  declare public readonly branch: pulumi.Output<string | undefined>;
+  declare public readonly autoDeploy: pulumi.Output<boolean | undefined>;
+  declare public readonly githubId: pulumi.Output<string | undefined>;
 
   constructor(name: string, args: ComposeArgs, opts?: pulumi.CustomResourceOptions) {
     super(composeProvider, name, { composeId: undefined, appName: undefined, ...args }, opts);

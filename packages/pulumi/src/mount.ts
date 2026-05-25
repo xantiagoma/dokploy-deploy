@@ -152,15 +152,15 @@ export interface MountArgs {
  */
 export class Mount extends pulumi.dynamic.Resource {
   /** The Dokploy mount ID */
-  public readonly mountId!: pulumi.Output<string>;
-  public readonly type!: pulumi.Output<MountType>;
-  public readonly mountPath!: pulumi.Output<string>;
-  public readonly serviceId!: pulumi.Output<string>;
-  public readonly content!: pulumi.Output<string | undefined>;
-  public readonly filePath!: pulumi.Output<string | undefined>;
-  public readonly hostPath!: pulumi.Output<string | undefined>;
-  public readonly volumeName!: pulumi.Output<string | undefined>;
-  public readonly serviceType!: pulumi.Output<ServiceType | undefined>;
+  declare public readonly mountId: pulumi.Output<string>;
+  declare public readonly type: pulumi.Output<MountType>;
+  declare public readonly mountPath: pulumi.Output<string>;
+  declare public readonly serviceId: pulumi.Output<string>;
+  declare public readonly content: pulumi.Output<string | undefined>;
+  declare public readonly filePath: pulumi.Output<string | undefined>;
+  declare public readonly hostPath: pulumi.Output<string | undefined>;
+  declare public readonly volumeName: pulumi.Output<string | undefined>;
+  declare public readonly serviceType: pulumi.Output<ServiceType | undefined>;
 
   constructor(name: string, args: MountArgs, opts?: pulumi.CustomResourceOptions) {
     super(mountProvider, name, { mountId: undefined, ...args }, opts);
