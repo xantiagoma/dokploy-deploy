@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.6
+
+[compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.5...v0.0.6)
+
+### 🩹 Fixes
+
+- **pulumi:** Inline environment lookups to avoid closure serialization issues ([06d3fc1](https://github.com/xantiagoma/dokploy-deploy/commit/06d3fc1))
+
+### ❤️ Contributors
+
+- Santiago Montoya ([@xantiagoma](https://github.com/xantiagoma))
+
 ## v0.0.5
 
 [compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.4...v0.0.5)
