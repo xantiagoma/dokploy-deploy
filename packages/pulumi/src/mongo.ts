@@ -1,5 +1,5 @@
 import * as pulumi from "@pulumi/pulumi";
-import { getClient, diffProps } from "./provider-utils.ts";
+import { getClient, diffProps, getEnvironmentWithServices } from "./provider-utils.ts";
 
 interface MongoProviderInputs {
   name: string;
@@ -14,6 +14,26 @@ interface MongoProviderInputs {
 const mongoProvider: pulumi.dynamic.ResourceProvider = {
   async create(inputs: MongoProviderInputs) {
     const client = getClient();
+
+    // Adopt existing mongo by name within the same environment
+    const env = await getEnvironmentWithServices(inputs.environmentId);
+    const existing = env?.mongo.find((p) => p.name === inputs.name);
+
+    if (existing) {
+      await client.mongo.update({
+        mongoId: existing.mongoId,
+        name: inputs.name,
+        databaseUser: inputs.databaseUser,
+        databasePassword: inputs.databasePassword,
+        description: inputs.description,
+        dockerImage: inputs.dockerImage,
+      });
+
+      return {
+        id: existing.mongoId,
+        outs: { ...inputs, mongoId: existing.mongoId, appName: existing.appName, externalPort: existing.externalPort },
+      };
+    }
 
     const db = await client.mongo.create({
       name: inputs.name,

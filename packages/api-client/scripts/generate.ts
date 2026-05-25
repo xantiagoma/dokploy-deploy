@@ -453,7 +453,7 @@ indexFile.addExportDeclaration({
 indexFile.addExportDeclaration({
   isTypeOnly: true,
   moduleSpecifier: "./response-map.ts",
-  namedExports: ["ResponseMap", "ProjectResponse", "CreateProjectResponse", "EnvironmentResponse", "ComposeResponse", "DomainResponse"],
+  namedExports: ["ResponseMap", "ProjectResponse", "CreateProjectResponse", "EnvironmentResponse", "EnvironmentWithServicesResponse", "ComposeResponse", "DomainResponse"],
 });
 
 indexFile.addExportDeclaration({

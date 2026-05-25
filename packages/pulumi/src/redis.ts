@@ -1,5 +1,5 @@
 import * as pulumi from "@pulumi/pulumi";
-import { getClient, diffProps } from "./provider-utils.ts";
+import { getClient, diffProps, getEnvironmentWithServices } from "./provider-utils.ts";
 
 interface RedisProviderInputs {
   name: string;
@@ -12,6 +12,25 @@ interface RedisProviderInputs {
 const redisProvider: pulumi.dynamic.ResourceProvider = {
   async create(inputs: RedisProviderInputs) {
     const client = getClient();
+
+    // Adopt existing redis by name within the same environment
+    const env = await getEnvironmentWithServices(inputs.environmentId);
+    const existing = env?.redis.find((r) => r.name === inputs.name);
+
+    if (existing) {
+      await client.redis.update({
+        redisId: existing.redisId,
+        name: inputs.name,
+        databasePassword: inputs.databasePassword,
+        description: inputs.description,
+        dockerImage: inputs.dockerImage,
+      });
+
+      return {
+        id: existing.redisId,
+        outs: { ...inputs, redisId: existing.redisId, appName: existing.appName, externalPort: existing.externalPort },
+      };
+    }
 
     const db = await client.redis.create({
       name: inputs.name,

@@ -1,5 +1,5 @@
 import * as pulumi from "@pulumi/pulumi";
-import { getClient, diffProps } from "./provider-utils.ts";
+import { getClient, diffProps, getEnvironmentWithServices } from "./provider-utils.ts";
 
 interface ApplicationProviderInputs {
   name: string;
@@ -12,6 +12,23 @@ interface ApplicationProviderInputs {
 const applicationProvider: pulumi.dynamic.ResourceProvider = {
   async create(inputs: ApplicationProviderInputs) {
     const client = getClient();
+
+    // Adopt existing application by name within the same environment
+    const env = await getEnvironmentWithServices(inputs.environmentId);
+    const existing = env?.applications.find((a) => a.name === inputs.name);
+
+    if (existing) {
+      await client.application.update({
+        applicationId: existing.applicationId,
+        name: inputs.name,
+        description: inputs.description ?? null,
+      });
+
+      return {
+        id: existing.applicationId,
+        outs: { ...inputs, applicationId: existing.applicationId, appName: existing.appName },
+      };
+    }
 
     const result = await client.application.create({
       name: inputs.name,

@@ -10,6 +10,31 @@ interface ProjectProviderInputs {
 const projectProvider: pulumi.dynamic.ResourceProvider = {
   async create(inputs: ProjectProviderInputs) {
     const client = getClient();
+
+    // Adopt existing project by name if it already exists
+    const allProjects = await client.project.all();
+    const existing = allProjects.find((p) => p.name === inputs.name);
+
+    if (existing) {
+      await client.project.update({
+        projectId: existing.projectId,
+        name: inputs.name,
+        description: inputs.description,
+        env: inputs.env,
+      });
+      const envs = await client.environment.byProjectId({ projectId: existing.projectId });
+      const productionEnv = envs.find((e) => e.name === "Production") ?? envs[0];
+
+      return {
+        id: existing.projectId,
+        outs: {
+          ...inputs,
+          projectId: existing.projectId,
+          productionEnvironmentId: productionEnv?.environmentId ?? "",
+        },
+      };
+    }
+
     const result = await client.project.create({
       name: inputs.name,
       description: inputs.description,

@@ -1,5 +1,5 @@
 import * as pulumi from "@pulumi/pulumi";
-import type { CertificateType, DomainType } from "@xantiagoma/dokploy-api";
+import type { CertificateType, DomainType, DomainResponse } from "@xantiagoma/dokploy-api";
 import { getClient, diffProps } from "./provider-utils.ts";
 
 interface DomainProviderInputs {
@@ -17,6 +17,34 @@ interface DomainProviderInputs {
 const domainProvider: pulumi.dynamic.ResourceProvider = {
   async create(inputs: DomainProviderInputs) {
     const client = getClient();
+
+    // Adopt existing domain by host match on the same service
+    let existingDomains: DomainResponse[] = [];
+    if (inputs.composeId) {
+      existingDomains = await client.domain.byComposeId({ composeId: inputs.composeId });
+    } else if (inputs.applicationId) {
+      existingDomains = await client.domain.byApplicationId({ applicationId: inputs.applicationId });
+    }
+    const existing = existingDomains.find((d) => d.host === inputs.host);
+
+    if (existing) {
+      await client.domain.update({
+        domainId: existing.domainId,
+        host: inputs.host,
+        path: inputs.path,
+        port: inputs.port,
+        https: inputs.https,
+        certificateType: inputs.certificateType,
+        serviceName: inputs.serviceName,
+        domainType: inputs.domainType,
+      });
+
+      return {
+        id: existing.domainId,
+        outs: { ...inputs, domainId: existing.domainId },
+      };
+    }
+
     const domain = await client.domain.create({
         host: inputs.host,
         path: inputs.path,

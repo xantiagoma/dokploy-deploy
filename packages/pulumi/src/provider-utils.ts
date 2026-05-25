@@ -1,5 +1,5 @@
 import { createDokployClient } from "@xantiagoma/dokploy-api";
-import type { DokployClientWithRaw } from "@xantiagoma/dokploy-api";
+import type { DokployClientWithRaw, EnvironmentWithServicesResponse } from "@xantiagoma/dokploy-api";
 
 let cachedClient: DokployClientWithRaw | undefined;
 
@@ -44,4 +44,19 @@ export function diffProps(
   }
 
   return { changes, replaces };
+}
+
+/**
+ * Fetch an environment with all nested services (compose, postgres, redis, etc.)
+ * using environment.byProjectId which returns EnvironmentWithServicesResponse[].
+ *
+ * environment.one only returns the bare EnvironmentResponse without services,
+ * so we use this lookup pattern instead.
+ */
+export async function getEnvironmentWithServices(environmentId: string): Promise<EnvironmentWithServicesResponse | undefined> {
+  const client = getClient();
+  // We need the projectId first — get it from the bare environment
+  const env = await client.environment.one({ environmentId });
+  const envs = await client.environment.byProjectId({ projectId: env.projectId });
+  return envs.find((e) => e.environmentId === environmentId);
 }

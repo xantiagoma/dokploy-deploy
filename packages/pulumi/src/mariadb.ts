@@ -1,5 +1,5 @@
 import * as pulumi from "@pulumi/pulumi";
-import { getClient, diffProps } from "./provider-utils.ts";
+import { getClient, diffProps, getEnvironmentWithServices } from "./provider-utils.ts";
 
 interface MariadbProviderInputs {
   name: string;
@@ -15,6 +15,28 @@ interface MariadbProviderInputs {
 const mariadbProvider: pulumi.dynamic.ResourceProvider = {
   async create(inputs: MariadbProviderInputs) {
     const client = getClient();
+
+    // Adopt existing mariadb by name within the same environment
+    const env = await getEnvironmentWithServices(inputs.environmentId);
+    const existing = env?.mariadb.find((p) => p.name === inputs.name);
+
+    if (existing) {
+      await client.mariadb.update({
+        mariadbId: existing.mariadbId,
+        name: inputs.name,
+        databaseName: inputs.databaseName,
+        databaseUser: inputs.databaseUser,
+        databasePassword: inputs.databasePassword,
+        databaseRootPassword: inputs.databaseRootPassword,
+        description: inputs.description,
+        dockerImage: inputs.dockerImage,
+      });
+
+      return {
+        id: existing.mariadbId,
+        outs: { ...inputs, mariadbId: existing.mariadbId, appName: existing.appName, externalPort: existing.externalPort },
+      };
+    }
 
     const db = await client.mariadb.create({
       name: inputs.name,

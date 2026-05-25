@@ -1,5 +1,5 @@
 import * as pulumi from "@pulumi/pulumi";
-import { getClient, diffProps } from "./provider-utils.ts";
+import { getClient, diffProps, getEnvironmentWithServices } from "./provider-utils.ts";
 
 interface PostgresProviderInputs {
   name: string;
@@ -14,6 +14,28 @@ interface PostgresProviderInputs {
 const postgresProvider: pulumi.dynamic.ResourceProvider = {
   async create(inputs: PostgresProviderInputs) {
     const client = getClient();
+
+    // Adopt existing postgres by name within the same environment
+    const env = await getEnvironmentWithServices(inputs.environmentId);
+    const existing = env?.postgres.find((p) => p.name === inputs.name);
+
+    if (existing) {
+      await client.postgres.update({
+        postgresId: existing.postgresId,
+        name: inputs.name,
+        databaseName: inputs.databaseName,
+        databaseUser: inputs.databaseUser,
+        databasePassword: inputs.databasePassword,
+        description: inputs.description,
+        dockerImage: inputs.dockerImage,
+      });
+
+      return {
+        id: existing.postgresId,
+        outs: { ...inputs, postgresId: existing.postgresId, appName: existing.appName, externalPort: existing.externalPort },
+      };
+    }
+
     const pg = await client.postgres.create({
       name: inputs.name,
       environmentId: inputs.environmentId,
