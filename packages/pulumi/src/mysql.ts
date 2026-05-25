@@ -1,5 +1,5 @@
 import * as pulumi from "@pulumi/pulumi";
-import { getClient, diffProps, getEnvironmentWithServices } from "./provider-utils.ts";
+import { getClient, diffProps } from "./provider-utils.ts";
 
 interface MysqlProviderInputs {
   name: string;
@@ -17,7 +17,9 @@ const mysqlProvider: pulumi.dynamic.ResourceProvider = {
     const client = getClient();
 
     // Adopt existing mysql by name within the same environment
-    const env = await getEnvironmentWithServices(inputs.environmentId);
+    const envData = await client.environment.one({ environmentId: inputs.environmentId });
+    const envs = await client.environment.byProjectId({ projectId: envData.projectId });
+    const env = envs.find((e) => e.environmentId === inputs.environmentId);
     const existing = env?.mysql.find((p) => p.name === inputs.name);
 
     if (existing) {

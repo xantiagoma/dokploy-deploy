@@ -1,6 +1,6 @@
 import * as pulumi from "@pulumi/pulumi";
 import type { ComposeSourceType } from "@xantiagoma/dokploy-api";
-import { getClient, diffProps, getEnvironmentWithServices } from "./provider-utils.ts";
+import { getClient, diffProps } from "./provider-utils.ts";
 
 type ComposeUpdateInput = Parameters<ReturnType<typeof getClient>["compose"]["update"]>[0];
 
@@ -43,7 +43,9 @@ const composeProvider: pulumi.dynamic.ResourceProvider = {
     const client = getClient();
 
     // Adopt existing compose service by name within the same environment
-    const env = await getEnvironmentWithServices(inputs.environmentId);
+    const envData = await client.environment.one({ environmentId: inputs.environmentId });
+    const envs = await client.environment.byProjectId({ projectId: envData.projectId });
+    const env = envs.find((e) => e.environmentId === inputs.environmentId);
     const existing = env?.compose.find((c) => c.name === inputs.name);
 
     if (existing) {

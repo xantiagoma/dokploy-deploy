@@ -55,8 +55,19 @@ export function diffProps(
  */
 export async function getEnvironmentWithServices(environmentId: string): Promise<EnvironmentWithServicesResponse | undefined> {
   const client = getClient();
-  // We need the projectId first — get it from the bare environment
-  const env = await client.environment.one({ environmentId });
-  const envs = await client.environment.byProjectId({ projectId: env.projectId });
-  return envs.find((e) => e.environmentId === environmentId);
+  try {
+    // environment.one actually returns the full EnvironmentWithServicesResponse
+    // (compose, postgres, redis, etc.) despite the type saying otherwise
+    const env = await client.environment.one({ environmentId });
+    const envWithServices = env as unknown as EnvironmentWithServicesResponse;
+    if (envWithServices.compose) return envWithServices;
+
+    // Fallback: use byProjectId which is properly typed
+    const envs = await client.environment.byProjectId({ projectId: env.projectId });
+    return envs.find((e) => e.environmentId === environmentId);
+  } catch (err) {
+    // Pulumi Dynamic Providers need Error instances for proper serialization
+    if (err instanceof Error) throw err;
+    throw new Error(`getEnvironmentWithServices failed: ${String(err)}`);
+  }
 }
