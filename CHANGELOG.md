@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.11
+
+[compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.10...v0.0.11)
+
+### 🩹 Fixes
+
+- **pulumi:** Catch deploy errors in serialized closure context ([634c721](https://github.com/xantiagoma/dokploy-deploy/commit/634c721))
+
+### ❤️ Contributors
+
+- Santiago Montoya ([@xantiagoma](https://github.com/xantiagoma))
+
 ## v0.0.10
 
 [compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.9...v0.0.10)
