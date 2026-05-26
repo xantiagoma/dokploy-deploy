@@ -257,6 +257,22 @@ const tag = new raw.Tag("beta", { name: "beta", color: "#f59e0b" });
 const sshKey = new raw.SshKey("deploy-key", { name: "deploy-key", privateKey: "..." });
 ```
 
+## Cloudflare (or any reverse proxy with SSL termination)
+
+The defaults (`https: true`, `certificateType: "letsencrypt"`) are correct when Dokploy is directly exposed to the internet. But if your domains are proxied through **Cloudflare** (or another reverse proxy that terminates SSL), you must override both:
+
+```ts
+domains: [{
+  host: "app.example.com",
+  serviceName: "app",
+  port: 3000,
+  https: false,            // Cloudflare handles HTTPS
+  certificateType: "none", // Don't generate letsencrypt certs
+}]
+```
+
+**Without this:** Traefik redirects HTTP → HTTPS, but Cloudflare already terminated SSL and forwards HTTP → infinite redirect loop (`ERR_TOO_MANY_REDIRECTS`).
+
 ## Defaults
 
 | Property | Default |

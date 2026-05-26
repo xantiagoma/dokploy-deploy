@@ -142,6 +142,24 @@ When adding a new provider, always check `ResponseMap` for the create operation 
 - **Swarm fields** are all null unless running in Docker Swarm mode
 - **Response types** from OpenAPI spec are empty (`{}`) — tRPC-to-OpenAPI limitation. We verify shapes against the real API.
 
+### Cloudflare + Dokploy Domains
+
+When Dokploy runs behind Cloudflare (proxied DNS), domains must use:
+
+```ts
+domains: [{
+  host: "app.example.com",
+  serviceName: "app",
+  port: 3000,
+  https: false,           // Cloudflare terminates SSL
+  certificateType: "none", // Don't generate letsencrypt certs
+}]
+```
+
+**Why:** Cloudflare handles HTTPS and forwards HTTP to Traefik. If `https: true` or `certificateType: "letsencrypt"`, Traefik redirects to HTTPS → Cloudflare sends HTTP again → infinite redirect loop (`ERR_TOO_MANY_REDIRECTS`).
+
+The SST component defaults are `https: true` + `certificateType: "letsencrypt"` — correct for non-Cloudflare setups, but must be overridden when Cloudflare proxies the domain.
+
 ### Pulumi Dynamic Provider Constraints
 
 Pulumi serializes provider closures to state. This means:
@@ -149,6 +167,7 @@ Pulumi serializes provider closures to state. This means:
 - No `ohash`, `WeakMap`, or non-serializable dependencies
 - Keep provider implementations simple and serializable
 - The `diffProps` utility uses `JSON.stringify` comparison (not deep equality libraries)
+- **Class fields MUST use `declare`** — `public readonly field!: Output<T>` gets compiled by tsdown to `field;` which overwrites Pulumi's outputs with `undefined`. Use `declare public readonly field: Output<T>` instead.
 
 ### Database Connection Strings
 
