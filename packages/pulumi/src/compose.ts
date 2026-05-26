@@ -109,6 +109,11 @@ const composeProvider: pulumi.dynamic.ResourceProvider = {
     const updatePayload = buildUpdatePayload({ composeId: id, name: news.name, description: news.description }, news);
     await client.compose.update(updatePayload);
 
+    // Deploy to apply the changes (env, compose file, etc.)
+    await client.compose.deploy({ composeId: id }).catch(() => {
+      // Deploy may fail if the service has no source configured yet — ignore
+    });
+
     return {
       outs: { ...news, composeId: id, appName: olds["appName"] as string },
     };
