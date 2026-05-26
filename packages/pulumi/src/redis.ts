@@ -80,6 +80,8 @@ const redisProvider: pulumi.dynamic.ResourceProvider = {
       dockerImage: news.dockerImage,
     });
 
+    await client.redis.deploy({ redisId: id });
+
     return {
       outs: { ...news, redisId: id, appName: olds["appName"] as string, externalPort: olds["externalPort"] },
     };

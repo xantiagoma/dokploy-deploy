@@ -95,6 +95,8 @@ const mysqlProvider: pulumi.dynamic.ResourceProvider = {
       databaseRootPassword: news.databaseRootPassword,
     });
 
+    await client.mysql.deploy({ mysqlId: id });
+
     return {
       outs: { ...news, mysqlId: id, appName: olds["appName"] as string, externalPort: olds["externalPort"] },
     };

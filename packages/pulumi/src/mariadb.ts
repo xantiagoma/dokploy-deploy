@@ -95,6 +95,8 @@ const mariadbProvider: pulumi.dynamic.ResourceProvider = {
       databaseRootPassword: news.databaseRootPassword,
     });
 
+    await client.mariadb.deploy({ mariadbId: id });
+
     return {
       outs: { ...news, mariadbId: id, appName: olds["appName"] as string, externalPort: olds["externalPort"] },
     };
