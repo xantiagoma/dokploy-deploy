@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.9
+
+[compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.8...v0.0.9)
+
+### 🚀 Enhancements
+
+- **pulumi:** Deploy all resources after update (app, db, redis, etc.) ([daf3fb9](https://github.com/xantiagoma/dokploy-deploy/commit/daf3fb9))
+
+### ❤️ Contributors
+
+- Santiago Montoya ([@xantiagoma](https://github.com/xantiagoma))
+
 ## v0.0.8
 
 [compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.7...v0.0.8)
