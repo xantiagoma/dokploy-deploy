@@ -1,6 +1,6 @@
 {
   "name": "@xantiagoma/dokploy-sst",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "High-level SST/Pulumi components for Dokploy — declarative Docker Compose deployments",
   "type": "module",
   "license": "MIT",

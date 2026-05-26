@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.8
+
+[compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.7...v0.0.8)
+
+### 🚀 Enhancements
+
+- **pulumi:** Deploy compose services after update ([d84fe55](https://github.com/xantiagoma/dokploy-deploy/commit/d84fe55))
+
+### ❤️ Contributors
+
+- Santiago Montoya ([@xantiagoma](https://github.com/xantiagoma))
+
 ## v0.0.7
 
 [compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.6...v0.0.7)
