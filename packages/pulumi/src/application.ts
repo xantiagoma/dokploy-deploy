@@ -26,6 +26,8 @@ const applicationProvider: pulumi.dynamic.ResourceProvider = {
         description: inputs.description ?? null,
       });
 
+      await client.application.deploy({ applicationId: existing.applicationId });
+
       return {
         id: existing.applicationId,
         outs: { ...inputs, applicationId: existing.applicationId, appName: existing.appName },

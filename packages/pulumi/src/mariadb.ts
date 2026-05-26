@@ -34,6 +34,8 @@ const mariadbProvider: pulumi.dynamic.ResourceProvider = {
         dockerImage: inputs.dockerImage,
       });
 
+      await client.mariadb.deploy({ mariadbId: existing.mariadbId });
+
       return {
         id: existing.mariadbId,
         outs: { ...inputs, mariadbId: existing.mariadbId, appName: existing.appName, externalPort: existing.externalPort },

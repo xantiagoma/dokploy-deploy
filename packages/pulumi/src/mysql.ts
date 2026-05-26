@@ -34,6 +34,8 @@ const mysqlProvider: pulumi.dynamic.ResourceProvider = {
         dockerImage: inputs.dockerImage,
       });
 
+      await client.mysql.deploy({ mysqlId: existing.mysqlId });
+
       return {
         id: existing.mysqlId,
         outs: { ...inputs, mysqlId: existing.mysqlId, appName: existing.appName, externalPort: existing.externalPort },

@@ -51,6 +51,7 @@ const composeProvider: pulumi.dynamic.ResourceProvider = {
     if (existing) {
       const updatePayload = buildUpdatePayload({ composeId: existing.composeId, name: inputs.name, description: inputs.description }, inputs);
       await client.compose.update(updatePayload);
+      await client.compose.deploy({ composeId: existing.composeId });
 
       return {
         id: existing.composeId,
@@ -69,6 +70,9 @@ const composeProvider: pulumi.dynamic.ResourceProvider = {
     if (Object.keys(updatePayload).length > 1) {
       await client.compose.update(updatePayload);
     }
+
+    // New service may not have source yet — deploy best-effort
+    await client.compose.deploy({ composeId: compose.composeId }).catch(() => {});
 
     return {
       id: compose.composeId,

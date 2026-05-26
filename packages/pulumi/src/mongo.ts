@@ -31,6 +31,8 @@ const mongoProvider: pulumi.dynamic.ResourceProvider = {
         dockerImage: inputs.dockerImage,
       });
 
+      await client.mongo.deploy({ mongoId: existing.mongoId });
+
       return {
         id: existing.mongoId,
         outs: { ...inputs, mongoId: existing.mongoId, appName: existing.appName, externalPort: existing.externalPort },

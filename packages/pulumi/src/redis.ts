@@ -28,6 +28,8 @@ const redisProvider: pulumi.dynamic.ResourceProvider = {
         dockerImage: inputs.dockerImage,
       });
 
+      await client.redis.deploy({ redisId: existing.redisId });
+
       return {
         id: existing.redisId,
         outs: { ...inputs, redisId: existing.redisId, appName: existing.appName, externalPort: existing.externalPort },
