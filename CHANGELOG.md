@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.10
+
+[compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.9...v0.0.10)
+
+### 🚀 Enhancements
+
+- **pulumi:** Deploy on create (adopt) for all resource types ([a644195](https://github.com/xantiagoma/dokploy-deploy/commit/a644195))
+
+### ❤️ Contributors
+
+- Santiago Montoya ([@xantiagoma](https://github.com/xantiagoma))
+
 ## v0.0.9
 
 [compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.8...v0.0.9)
