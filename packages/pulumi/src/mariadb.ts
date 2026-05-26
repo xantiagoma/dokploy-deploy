@@ -34,7 +34,7 @@ const mariadbProvider: pulumi.dynamic.ResourceProvider = {
         dockerImage: inputs.dockerImage,
       });
 
-      await client.mariadb.deploy({ mariadbId: existing.mariadbId });
+      await client.mariadb.deploy({ mariadbId: existing.mariadbId }).catch(() => {});
 
       return {
         id: existing.mariadbId,
@@ -97,7 +97,7 @@ const mariadbProvider: pulumi.dynamic.ResourceProvider = {
       databaseRootPassword: news.databaseRootPassword,
     });
 
-    await client.mariadb.deploy({ mariadbId: id });
+    await client.mariadb.deploy({ mariadbId: id }).catch(() => {});
 
     return {
       outs: { ...news, mariadbId: id, appName: olds["appName"] as string, externalPort: olds["externalPort"] },

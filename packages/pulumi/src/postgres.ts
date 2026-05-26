@@ -32,7 +32,7 @@ const postgresProvider: pulumi.dynamic.ResourceProvider = {
         dockerImage: inputs.dockerImage,
       });
 
-      await client.postgres.deploy({ postgresId: existing.postgresId });
+      await client.postgres.deploy({ postgresId: existing.postgresId }).catch(() => {});
 
       return {
         id: existing.postgresId,
@@ -92,7 +92,7 @@ const postgresProvider: pulumi.dynamic.ResourceProvider = {
       dockerImage: news.dockerImage,
     });
 
-    await client.postgres.deploy({ postgresId: id });
+    await client.postgres.deploy({ postgresId: id }).catch(() => {});
 
     return {
       outs: { ...news, postgresId: id, appName: olds["appName"] as string, externalPort: olds["externalPort"] },

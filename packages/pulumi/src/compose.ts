@@ -51,7 +51,7 @@ const composeProvider: pulumi.dynamic.ResourceProvider = {
     if (existing) {
       const updatePayload = buildUpdatePayload({ composeId: existing.composeId, name: inputs.name, description: inputs.description }, inputs);
       await client.compose.update(updatePayload);
-      await client.compose.deploy({ composeId: existing.composeId });
+      await client.compose.deploy({ composeId: existing.composeId }).catch(() => {});
 
       return {
         id: existing.composeId,
@@ -114,7 +114,7 @@ const composeProvider: pulumi.dynamic.ResourceProvider = {
     await client.compose.update(updatePayload);
 
     // Deploy to apply the changes (env, compose file, etc.)
-    await client.compose.deploy({ composeId: id });
+    await client.compose.deploy({ composeId: id }).catch(() => {});
 
     return {
       outs: { ...news, composeId: id, appName: olds["appName"] as string },

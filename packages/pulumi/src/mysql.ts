@@ -34,7 +34,7 @@ const mysqlProvider: pulumi.dynamic.ResourceProvider = {
         dockerImage: inputs.dockerImage,
       });
 
-      await client.mysql.deploy({ mysqlId: existing.mysqlId });
+      await client.mysql.deploy({ mysqlId: existing.mysqlId }).catch(() => {});
 
       return {
         id: existing.mysqlId,
@@ -97,7 +97,7 @@ const mysqlProvider: pulumi.dynamic.ResourceProvider = {
       databaseRootPassword: news.databaseRootPassword,
     });
 
-    await client.mysql.deploy({ mysqlId: id });
+    await client.mysql.deploy({ mysqlId: id }).catch(() => {});
 
     return {
       outs: { ...news, mysqlId: id, appName: olds["appName"] as string, externalPort: olds["externalPort"] },

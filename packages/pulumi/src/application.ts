@@ -26,7 +26,7 @@ const applicationProvider: pulumi.dynamic.ResourceProvider = {
         description: inputs.description ?? null,
       });
 
-      await client.application.deploy({ applicationId: existing.applicationId });
+      await client.application.deploy({ applicationId: existing.applicationId }).catch(() => {});
 
       return {
         id: existing.applicationId,
@@ -77,7 +77,7 @@ const applicationProvider: pulumi.dynamic.ResourceProvider = {
       appName: news.appName,
     });
 
-    await client.application.deploy({ applicationId: id });
+    await client.application.deploy({ applicationId: id }).catch(() => {});
 
     return {
       outs: { ...news, applicationId: id },
