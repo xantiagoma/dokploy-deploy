@@ -197,10 +197,30 @@ bun test                 # integration tests (needs DOKPLOY_URL + DOKPLOY_API_KE
 
 ### Releasing
 
-Uses changelogen with conventional commits:
+Two-stage flow. **You never run `npm publish` locally** — pushing a `v*` tag is what publishes.
+
+**Stage 1 — local** (`bun run release` = `scripts/release.ts`):
+1. `changelogen --bump --output` — bumps the **root** `package.json` version + writes CHANGELOG (auto-detects semver from conventional commits; force with `bun run release -- --patch` / `--minor`)
+2. `scripts/sync-versions.ts` — copies the root version into all 4 `packages/*/package.json`
+3. `git add -A` → commit `chore(release): vX.Y.Z` → annotated tag `vX.Y.Z` → `git push --follow-tags`
+
 ```bash
-bun run release          # bump, changelog, commit, tag, push → CI publishes to npm
+bun run release            # auto bump
+bun run release -- --patch # force patch
 ```
+
+**Stage 2 — CI** (`.github/workflows/release.yml`, triggered by the pushed `v*` tag):
+- `bun install --frozen-lockfile` → `check-types` → `bun test` → `build`
+- `changelogen gh release` creates the GitHub Release
+- rewrites `"workspace:*"` → `"^<version>"` in each package.json (on the fresh checkout)
+- `npm publish --access public --provenance` for all 4 packages in order: api-client → pulumi → sst → cli (each `|| true`, so one failure won't block the rest)
+- Needs repo secrets: `NPM_TOKEN` (publish) + `GITHUB_TOKEN` (auto, for the release); `id-token: write` enables npm provenance.
+
+**Why CI `bun test` doesn't fail without creds:** `client.test.ts` uses `describe.skipIf(!DOKPLOY_URL || !DOKPLOY_API_KEY)`, so the integration suite is skipped in CI (no Dokploy secrets there).
+
+**CI on every push/PR to main** (`.github/workflows/ci.yml`): `check-types` → `build` → `test` (no publish).
+
+After a release, verify with `gh run list` (look for the `Release` workflow on the tag) and `npm view @xantiagoma/dokploy-api version`.
 
 ### Pulumi Resources (30)
 
