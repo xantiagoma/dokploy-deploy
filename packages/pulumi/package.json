@@ -1,6 +1,6 @@
 {
   "name": "@xantiagoma/dokploy-pulumi",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Pulumi dynamic provider for Dokploy — manage projects, compose services, and domains as code",
   "type": "module",
   "license": "MIT",

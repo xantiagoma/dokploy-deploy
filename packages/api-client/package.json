@@ -1,6 +1,6 @@
 {
   "name": "@xantiagoma/dokploy-api",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Typed HTTP client for the Dokploy tRPC API",
   "type": "module",
   "license": "MIT",

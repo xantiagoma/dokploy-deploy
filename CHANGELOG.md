@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.0.13
+
+[compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.12...v0.0.13)
+
+### 🩹 Fixes
+
+- **pulumi:** Prevent replace storm on provider version bump ([60fb8e0](https://github.com/xantiagoma/dokploy-deploy/commit/60fb8e0))
+
+### 📖 Documentation
+
+- Document diffProps replace-storm guard ([887eaf5](https://github.com/xantiagoma/dokploy-deploy/commit/887eaf5))
+
+### ❤️ Contributors
+
+- Santiago Montoya ([@xantiagoma](https://github.com/xantiagoma))
+
 ## v0.0.12
 
 [compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.11...v0.0.12)
