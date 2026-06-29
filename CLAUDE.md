@@ -169,6 +169,15 @@ Pulumi serializes provider closures to state. This means:
 - The `diffProps` utility uses `JSON.stringify` comparison (not deep equality libraries)
 - **Class fields MUST use `declare`** — `public readonly field!: Output<T>` gets compiled by tsdown to `field;` which overwrites Pulumi's outputs with `undefined`. Use `declare public readonly field: Output<T>` instead.
 
+#### diffProps must ignore `__provider` and unknown sentinels (replace-storm guard)
+
+A version bump of `@xantiagoma/dokploy-pulumi` must be a safe in-place no-op on a live stack — NOT a destructive replace. `diffProps` enforces this by skipping two values:
+
+- **`__provider`** — the runtime injects the serialized provider closure into every resource's prop bag under this key. It changes on every package version bump, so counting it as a diff would mark every resource for update.
+- **`UNKNOWN_VALUE`** (`"04da6b54-80e4-46f7-96ec-b56ff0331ba9"`) — Pulumi's unknown-output sentinel. During `preview`, an input reading an upstream resource's not-yet-known output (e.g. `environmentId: project.productionEnvironmentId` when the project has a pending update) arrives as this sentinel. Treating `known => unknown` as a change on a **replace-trigger key** (`environmentId`, `composeId`, …) would cascade into a replace of every dependent compose/domain/database — **including DB data loss**. `diffProps` never reports a change or replace for an unknown value; Pulumi re-runs `diff()` with the resolved value at update time, so genuine changes are still caught.
+
+The dynamic-provider host deserializes `diff()` from `news.__provider` (the *current program's* code, not old state), so this fix takes effect on the very upgrade that introduces it. Any new replace-trigger key passed to `diffProps` inherits this protection automatically — keep all replace logic flowing through `diffProps`, never hand-roll a `replaces` array. Regression tests live in `packages/pulumi/src/provider-utils.test.ts`.
+
 ### Database Connection Strings
 
 SST database components expose `connectionString` and `host`:
