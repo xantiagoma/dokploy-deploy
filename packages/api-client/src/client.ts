@@ -39,7 +39,9 @@ class TrpcFetcher implements Transport {
         const res = await fetch(url, { headers: { "x-api-key": this.apiKey, "Content-Type": "application/json" } });
         if (!res.ok) { const body = await res.text(); throw new DokployApiError(procedure, res.status, body); }
 
-        const data = (await res.json()) as { result: { data: { json: T } } };
+        const text = await res.text();
+        if (!text) return undefined as T;
+        const data = JSON.parse(text) as { result: { data: { json: T } } };
         return data.result.data.json;
     }
 
@@ -48,7 +50,9 @@ class TrpcFetcher implements Transport {
         const res = await fetch(url, { method: "POST", headers: { "x-api-key": this.apiKey, "Content-Type": "application/json" }, body: JSON.stringify(input) });
         if (!res.ok) { const body = await res.text(); throw new DokployApiError(procedure, res.status, body); }
 
-        return (await res.json()) as T;
+        const text = await res.text();
+        if (!text) return undefined as T;
+        return JSON.parse(text) as T;
     }
 }
 
