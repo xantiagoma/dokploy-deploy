@@ -2,7 +2,7 @@
  * AUTO-GENERATED — do not edit manually.
  * Run: bun scripts/generate.ts
  *
- * 526 endpoints across 48 routers
+ * 541 endpoints across 49 routers
  */
 import type { operations } from "./generated.ts";
 import type { ResponseMap } from "./response-map.ts";
@@ -700,6 +700,51 @@ export class EnvironmentRouter {
 
     async search<T = ResponseOf<"environment-search">>(input: QueryOf<operations["environment-search"]>): Promise<T> {
         return this.transport.query<T>("environment.search", input);
+    }
+}
+
+export class ForwardAuthRouter {
+    constructor(private transport: Transport) {
+    }
+
+    async getAuthDomain<T = ResponseOf<"forwardAuth-getAuthDomain">>(input: QueryOf<operations["forwardAuth-getAuthDomain"]>): Promise<T> {
+        return this.transport.query<T>("forwardAuth.getAuthDomain", input);
+    }
+
+    async setAuthDomain<T = ResponseOf<"forwardAuth-setAuthDomain">>(input: BodyOf<operations["forwardAuth-setAuthDomain"]>): Promise<T> {
+        return this.transport.mutate<T>("forwardAuth.setAuthDomain", input);
+    }
+
+    async removeAuthDomain<T = ResponseOf<"forwardAuth-removeAuthDomain">>(input: BodyOf<operations["forwardAuth-removeAuthDomain"]>): Promise<T> {
+        return this.transport.mutate<T>("forwardAuth.removeAuthDomain", input);
+    }
+
+    async listProviders<T = ResponseOf<"forwardAuth-listProviders">>(): Promise<T> {
+        return this.transport.query<T>("forwardAuth.listProviders");
+    }
+
+    async serverStatus<T = ResponseOf<"forwardAuth-serverStatus">>(): Promise<T> {
+        return this.transport.query<T>("forwardAuth.serverStatus");
+    }
+
+    async deployOnServer<T = ResponseOf<"forwardAuth-deployOnServer">>(input: BodyOf<operations["forwardAuth-deployOnServer"]>): Promise<T> {
+        return this.transport.mutate<T>("forwardAuth.deployOnServer", input);
+    }
+
+    async removeOnServer<T = ResponseOf<"forwardAuth-removeOnServer">>(input: BodyOf<operations["forwardAuth-removeOnServer"]>): Promise<T> {
+        return this.transport.mutate<T>("forwardAuth.removeOnServer", input);
+    }
+
+    async status<T = ResponseOf<"forwardAuth-status">>(input: QueryOf<operations["forwardAuth-status"]>): Promise<T> {
+        return this.transport.query<T>("forwardAuth.status", input);
+    }
+
+    async enable<T = ResponseOf<"forwardAuth-enable">>(input: BodyOf<operations["forwardAuth-enable"]>): Promise<T> {
+        return this.transport.mutate<T>("forwardAuth.enable", input);
+    }
+
+    async disable<T = ResponseOf<"forwardAuth-disable">>(input: BodyOf<operations["forwardAuth-disable"]>): Promise<T> {
+        return this.transport.mutate<T>("forwardAuth.disable", input);
     }
 }
 
@@ -1818,6 +1863,10 @@ export class ServerRouter {
         return this.transport.mutate<T>("server.update", input);
     }
 
+    async updateBuildsConcurrency<T = ResponseOf<"server-updateBuildsConcurrency">>(input: BodyOf<operations["server-updateBuildsConcurrency"]>): Promise<T> {
+        return this.transport.mutate<T>("server.updateBuildsConcurrency", input);
+    }
+
     async publicIp<T = ResponseOf<"server-publicIp">>(): Promise<T> {
         return this.transport.query<T>("server.publicIp");
     }
@@ -1909,6 +1958,18 @@ export class SettingsRouter {
 
     async updateDockerCleanup<T = ResponseOf<"settings-updateDockerCleanup">>(input: BodyOf<operations["settings-updateDockerCleanup"]>): Promise<T> {
         return this.transport.mutate<T>("settings.updateDockerCleanup", input);
+    }
+
+    async updateRemoteServersOnly<T = ResponseOf<"settings-updateRemoteServersOnly">>(input: BodyOf<operations["settings-updateRemoteServersOnly"]>): Promise<T> {
+        return this.transport.mutate<T>("settings.updateRemoteServersOnly", input);
+    }
+
+    async updateBuildsConcurrency<T = ResponseOf<"settings-updateBuildsConcurrency">>(input: BodyOf<operations["settings-updateBuildsConcurrency"]>): Promise<T> {
+        return this.transport.mutate<T>("settings.updateBuildsConcurrency", input);
+    }
+
+    async updateEnforceSSO<T = ResponseOf<"settings-updateEnforceSSO">>(input: BodyOf<operations["settings-updateEnforceSSO"]>): Promise<T> {
+        return this.transport.mutate<T>("settings.updateEnforceSSO", input);
     }
 
     async readTraefikConfig<T = ResponseOf<"settings-readTraefikConfig">>(): Promise<T> {
@@ -2079,6 +2140,10 @@ export class SsoRouter {
 
     async showSignInWithSSO<T = ResponseOf<"sso-showSignInWithSSO">>(): Promise<T> {
         return this.transport.query<T>("sso.showSignInWithSSO");
+    }
+
+    async enforceSSO<T = ResponseOf<"sso-enforceSSO">>(): Promise<T> {
+        return this.transport.query<T>("sso.enforceSSO");
     }
 
     async listProviders<T = ResponseOf<"sso-listProviders">>(): Promise<T> {
@@ -2376,6 +2441,7 @@ export interface AllRouters {
     docker: DockerRouter;
     domain: DomainRouter;
     environment: EnvironmentRouter;
+    forwardAuth: ForwardAuthRouter;
     gitea: GiteaRouter;
     github: GithubRouter;
     gitlab: GitlabRouter;
@@ -2428,6 +2494,7 @@ export function createAllRouters(transport: Transport): AllRouters {
         docker: new DockerRouter(transport),
         domain: new DomainRouter(transport),
         environment: new EnvironmentRouter(transport),
+        forwardAuth: new ForwardAuthRouter(transport),
         gitea: new GiteaRouter(transport),
         github: new GithubRouter(transport),
         gitlab: new GitlabRouter(transport),
@@ -2480,6 +2547,7 @@ export class DokployClient implements AllRouters {
     public readonly docker!: DockerRouter;
     public readonly domain!: DomainRouter;
     public readonly environment!: EnvironmentRouter;
+    public readonly forwardAuth!: ForwardAuthRouter;
     public readonly gitea!: GiteaRouter;
     public readonly github!: GithubRouter;
     public readonly gitlab!: GitlabRouter;
@@ -2616,6 +2684,12 @@ export type EnvironmentCreateInput = BodyOf<operations["environment-create"]>;
 export type EnvironmentDuplicateInput = BodyOf<operations["environment-duplicate"]>;
 export type EnvironmentRemoveInput = BodyOf<operations["environment-remove"]>;
 export type EnvironmentUpdateInput = BodyOf<operations["environment-update"]>;
+export type ForwardAuthDeployOnServerInput = BodyOf<operations["forwardAuth-deployOnServer"]>;
+export type ForwardAuthDisableInput = BodyOf<operations["forwardAuth-disable"]>;
+export type ForwardAuthEnableInput = BodyOf<operations["forwardAuth-enable"]>;
+export type ForwardAuthRemoveAuthDomainInput = BodyOf<operations["forwardAuth-removeAuthDomain"]>;
+export type ForwardAuthRemoveOnServerInput = BodyOf<operations["forwardAuth-removeOnServer"]>;
+export type ForwardAuthSetAuthDomainInput = BodyOf<operations["forwardAuth-setAuthDomain"]>;
 export type GiteaCreateInput = BodyOf<operations["gitea-create"]>;
 export type GiteaTestConnectionInput = BodyOf<operations["gitea-testConnection"]>;
 export type GiteaUpdateInput = BodyOf<operations["gitea-update"]>;
@@ -2792,6 +2866,7 @@ export type ServerRemoveInput = BodyOf<operations["server-remove"]>;
 export type ServerSetupInput = BodyOf<operations["server-setup"]>;
 export type ServerSetupMonitoringInput = BodyOf<operations["server-setupMonitoring"]>;
 export type ServerUpdateInput = BodyOf<operations["server-update"]>;
+export type ServerUpdateBuildsConcurrencyInput = BodyOf<operations["server-updateBuildsConcurrency"]>;
 export type SettingsAssignDomainServerInput = BodyOf<operations["settings-assignDomainServer"]>;
 export type SettingsCleanAllInput = BodyOf<operations["settings-cleanAll"]>;
 export type SettingsCleanDockerBuilderInput = BodyOf<operations["settings-cleanDockerBuilder"]>;
@@ -2804,9 +2879,12 @@ export type SettingsSaveSSHPrivateKeyInput = BodyOf<operations["settings-saveSSH
 export type SettingsSetupGPUInput = BodyOf<operations["settings-setupGPU"]>;
 export type SettingsToggleDashboardInput = BodyOf<operations["settings-toggleDashboard"]>;
 export type SettingsToggleRequestsInput = BodyOf<operations["settings-toggleRequests"]>;
+export type SettingsUpdateBuildsConcurrencyInput = BodyOf<operations["settings-updateBuildsConcurrency"]>;
 export type SettingsUpdateDockerCleanupInput = BodyOf<operations["settings-updateDockerCleanup"]>;
+export type SettingsUpdateEnforceSSOInput = BodyOf<operations["settings-updateEnforceSSO"]>;
 export type SettingsUpdateLogCleanupInput = BodyOf<operations["settings-updateLogCleanup"]>;
 export type SettingsUpdateMiddlewareTraefikConfigInput = BodyOf<operations["settings-updateMiddlewareTraefikConfig"]>;
+export type SettingsUpdateRemoteServersOnlyInput = BodyOf<operations["settings-updateRemoteServersOnly"]>;
 export type SettingsUpdateServerIpInput = BodyOf<operations["settings-updateServerIp"]>;
 export type SettingsUpdateTraefikConfigInput = BodyOf<operations["settings-updateTraefikConfig"]>;
 export type SettingsUpdateTraefikFileInput = BodyOf<operations["settings-updateTraefikFile"]>;
