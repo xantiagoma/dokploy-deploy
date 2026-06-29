@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v0.0.12
+
+[compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.11...v0.0.12)
+
+### 🩹 Fixes
+
+- **api-client:** Guard empty response body in transport ([848fd8c](https://github.com/xantiagoma/dokploy-deploy/commit/848fd8c))
+
+### 📖 Documentation
+
+- Document Cloudflare domain config (https + certificateType) ([8a70b05](https://github.com/xantiagoma/dokploy-deploy/commit/8a70b05))
+- Document two-stage release flow (local tag → CI publish) ([11d972e](https://github.com/xantiagoma/dokploy-deploy/commit/11d972e))
+
+### 🏡 Chore
+
+- **api-client:** Regenerate from upstream OpenAPI spec ([c4eab25](https://github.com/xantiagoma/dokploy-deploy/commit/c4eab25))
+
+### ❤️ Contributors
+
+- Santiago Montoya ([@xantiagoma](https://github.com/xantiagoma))
+
 ## v0.0.11
 
 [compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.10...v0.0.11)
