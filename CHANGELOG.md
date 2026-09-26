@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.14
+
+[compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.13...v0.0.14)
+
+### 🩹 Fixes
+
+- **release:** Resolve catalog: specs before npm publish ([cf2a45e](https://github.com/xantiagoma/dokploy-deploy/commit/cf2a45e))
+
+### ❤️ Contributors
+
+- Santiago Montoya ([@xantiagoma](https://github.com/xantiagoma))
+
 ## v0.0.13
 
 [compare changes](https://github.com/xantiagoma/dokploy-deploy/compare/v0.0.12...v0.0.13)
