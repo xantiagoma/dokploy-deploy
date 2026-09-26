@@ -20,8 +20,10 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           registry-url: https://registry.npmjs.org
+      # Trusted publishing (OIDC, no NPM_TOKEN) needs npm >= 11.5.1.
+      - run: npm install -g npm@^11.5.1
 
       - run: bun install --frozen-lockfile
 
@@ -35,11 +37,19 @@ jobs:
       - name: Resolve workspace + catalog references for publish
         run: bun scripts/resolve-publish-specs.ts
 
+      # Trusted publishing: npm exchanges this job's OIDC token (id-token: write)
+      # for a short-lived publish credential — configured per package with
+      # `npm trust github <pkg> --file release.yml --repo xantiagoma/dokploy-deploy`.
+      # No NPM_TOKEN secret; provenance is attached automatically. Fails loudly;
+      # an already-published version is skipped so a re-run is safe.
       - name: Publish to npm
         run: |
-          cd packages/api-client && npm publish --access public --provenance || true
-          cd ../pulumi && npm publish --access public --provenance || true
-          cd ../sst && npm publish --access public --provenance || true
-          cd ../cli && npm publish --access public --provenance || true
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          for dir in api-client pulumi sst cli; do
+            name=$(node -p "require('./packages/$dir/package.json').name")
+            version=$(node -p "require('./packages/$dir/package.json').version")
+            if npm view "$name@$version" version >/dev/null 2>&1; then
+              echo "skip $name@$version (already published)"
+              continue
+            fi
+            (cd "packages/$dir" && npm publish --access public)
+          done
